@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Dashboard Pustakawan')
+@section('title', 'Dashboard')
 
 @section('content')
 <div class="mb-8 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
@@ -58,7 +58,9 @@
 
 <div class="mb-10">
     <h4 class="text-xs font-bold text-gray-400 uppercase tracking-widest mb-4">Aset & Keanggotaan Perpustakaan</h4>
-    <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+    
+    {{-- LOGIKA: Jika role admin gunakan cols-5, jika bukan gunakan cols-4 --}}
+    <div class="grid grid-cols-1 md:grid-cols-2 {{ Auth::user()->role == 'admin' ? 'lg:grid-cols-5' : 'lg:grid-cols-4' }} gap-6">
         
         <div class="bg-white p-6 rounded-2xl border border-blue-100 flex items-center justify-between shadow hover:border-blue-300 transition-all duration-300 group">
             <div class="space-y-1">
@@ -100,6 +102,21 @@
             </div>
         </div>
 
+        @if(Auth::user()->role == 'admin')
+        <div class="bg-white p-6 rounded-2xl border border-emerald-100 flex items-center justify-between shadow hover:border-emerald-300 transition-all duration-300 group">
+            <div class="space-y-1">
+                <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Pustakawan</p>
+                <h3 class="text-3xl font-bold text-[#2F3951]">{{ $totalPustakawan }}</h3>
+                <p class="text-xs text-emerald-500 font-medium">Staf aktif</p>
+            </div>
+            <div class="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-500 transition-transform group-hover:scale-110 flex-shrink-0">
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
+                </svg>
+            </div>
+        </div>
+        @endif
+
         <div class="bg-white p-6 rounded-2xl border border-sky-100 flex items-center justify-between shadow hover:border-sky-300 transition-all duration-300 group">
             <div class="space-y-1">
                 <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Anggota Aktif</p>
@@ -107,8 +124,8 @@
                 <p class="text-xs text-sky-500 font-medium">Member terdaftar</p>
             </div>
             <div class="w-12 h-12 rounded-xl bg-sky-50 flex items-center justify-center text-sky-500 transition-transform group-hover:scale-110 flex-shrink-0">
-                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-6 h-6">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 0 1 8.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0 1 11.964-3.07M12 6.375a3.375 3.375 0 1 1-6.75 0 3.375 3.375 0 0 1 6.75 0Zm8.25 2.25a2.625 2.625 0 1 1-5.25 0 2.625 2.625 0 0 1 5.25 0Z" />
+                <svg class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
                 </svg>
             </div>
         </div>

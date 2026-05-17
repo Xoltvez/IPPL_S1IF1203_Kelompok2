@@ -8,7 +8,7 @@
                 </svg>
             </button>
             
-            <div class="shadow-sm text-md text-[#4D9BE2] py-2 rounded-xl font-semibold self-start md:self-center">
+            <div class="text-md text-[#4D9BE2] py-2 rounded-xl font-semibold self-start md:self-center">
                 🗓️ {{ now()->translatedFormat('l, d F Y') }}
             </div>
         </div>

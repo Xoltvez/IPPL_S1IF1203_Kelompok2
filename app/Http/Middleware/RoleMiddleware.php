@@ -13,9 +13,21 @@ class RoleMiddleware
      *
      * @param  Closure(Request): (Response)  $next
      */
-    public function handle(Request $request, Closure $next, $role): Response 
+    public function handle(Request $request, Closure $next, ...$roles): Response 
     {
-        if ($request->user() && $request->user()->role !== $role) {
+        // 1. Pastikan user sudah login
+        if (!$request->user()) {
+            return redirect('login');
+        }
+
+        // 2. Antisipasi jika $roles dikirim sebagai string (pustakawan,admin)
+        // Beberapa versi Laravel mengirimkan parameter middleware sebagai string tunggal
+        if (count($roles) === 1 && str_contains($roles[0], ',')) {
+            $roles = explode(',', $roles[0]);
+        }
+
+        // 3. Cek apakah role user ada di dalam daftar yang diizinkan
+        if (!in_array($request->user()->role, $roles)) {
             return redirect('dashboard')->with('error', 'Anda tidak memiliki akses ke halaman ini.');
         }
 

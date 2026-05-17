@@ -6,6 +6,8 @@ use App\Http\Controllers\BukuController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\PeminjamanController;
 use App\Http\Controllers\KategoriController;
+use App\Http\Controllers\Member\MemberDashboardController;
+use App\Http\Controllers\MemberController;
 
 // 1. Halaman Depan Aplikasi
 Route::get('/', function () {
@@ -25,27 +27,23 @@ Route::middleware('auth')->group(function () {
 });
 
 // 4. Area Khusus Administrator
-Route::middleware(['auth', 'role:admin'])->group(function () {
-    Route::get('/admin/tools', function () {
-        return "Selamat datang Admin! Anda punya akses teknis tinggi."; 
-    });
-});
+// Route::middleware(['auth', 'role:admin'])->group(function () {
+//     Route::get('/admin/tools', function () {
+//         return "Selamat datang Admin! Anda punya akses teknis tinggi."; 
+//     });
+// });
 
 // 5. Area Khusus Pustakawan MacaBae (CRUD Buku Diringkas Sempurna)
-Route::middleware(['auth', 'role:pustakawan'])->prefix('pustakawan')->name('pustakawan.')->group(function () {
-    
-    // 1. SUNTIKKAN RUTE BARU INI TEPAT DI ATAS RESOURCE BUKU
+Route::middleware(['auth', 'role:pustakawan,admin'])->prefix('pustakawan')->name('pustakawan.')->group(function () {
     Route::delete('buku/destroy-multiple', [BukuController::class, 'destroyMultiple'])->name('buku.destroy-multiple');
-
-    // 2. Baris resource bawaan proyekmu yang sudah ada sebelumnya
     Route::resource('buku', BukuController::class);
-    Route::resource('kategori', KategoriController::class);
-    
+    Route::resource('kategori', KategoriController::class); 
+    Route::resource('member', MemberController::class);
 });
 
 // 6. Area Khusus Member/Pembaca Terdaftar
 Route::middleware(['auth', 'role:member'])->group(function () {
-    Route::post('/pinjam/{bukuId}', [PeminjamanController::class, 'store'])->name('pinjam.buku');
+    Route::get('/beranda', [MemberDashboardController::class, 'index'])->name('member.dashboard');
 });
 
 require __DIR__.'/auth.php';

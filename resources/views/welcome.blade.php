@@ -85,10 +85,10 @@
                 <img src="{{ asset('assets/img/landing/dummy-pengguna/dummy pengguna-1.png') }}" alt="Mockup MacaBae" class="w-8 h-8 rounded-full bg-gray-300 border-2 border-white">
                 <img src="{{ asset('assets/img/landing/dummy-pengguna/dummy pengguna-2.png') }}" alt="Mockup MacaBae" class="w-8 h-8 rounded-full bg-gray-300 border-2 border-white">
                 <img src="{{ asset('assets/img/landing/dummy-pengguna/dummy pengguna-3.png') }}" alt="Mockup MacaBae" class="w-8 h-8 rounded-full bg-gray-300 border-2 border-white">
-                <span class="pl-4 text-sm font-semibold self-center">1k+ pengguna aktif</span>
+                <span class="pl-4 text-sm font-semibold self-center">Bergabung dengan pengguna aktif lainnya</span>
             </div>
             <h1 class="text-4xl md:text-5xl font-bold mb-6 leFading-tight">📚 Akses Buku Perpustakaan <br> Jadi Lebih Mudah</h1>
-            <p class="text-gray-500 mb-10">Cari, lihat detail, dan baca eBook tanpa login.</p>
+            <p class="text-gray-500 mb-10">Cari ebook atau buku fisik kesukaanmu</p>
             
             <div class="relative max-w-xl mx-auto mb-16">
                 <input type="text" placeholder="Cari buku yang kamu mau" class="w-full py-4 px-12 rounded-2xl bg-white border border-gray-200 shadow-xl focus:ring-2 focus:ring-blue-400 outline-none">

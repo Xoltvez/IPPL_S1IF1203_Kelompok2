@@ -8,12 +8,12 @@
     <div class="flex-1 overflow-y-auto px-4 py-4 space-y-8 custom-scrollbar">
         {{-- MENU UTAMA: DASHBOARD SUMMARY --}}
         <div>
-            <p class="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Utama</p>
+            <p class="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Menu Utama</p>
             <div class="space-y-1">
                 <a href="{{ route('dashboard') }}" 
                 class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('dashboard') ? 'bg-[#F3F7FB] text-[#4D9BE2] font-semibold' : 'text-gray-500 hover:bg-gray-50' }}">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v4a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
                     </svg>
                     <span class="text-sm">Dashboard</span>
                 </a>
@@ -44,7 +44,7 @@
 
         {{-- SIRKULASI --}}
         <div>
-            <p class="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Sirkulasi</p>
+            <p class="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Transaksi</p>
             <div class="space-y-1">
                 <a href="#" 
                    class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('pustakawan.peminjaman*') ? 'bg-[#F3F7FB] text-[#4D9BE2] font-semibold' : 'text-gray-500 hover:bg-gray-50' }}">
@@ -65,10 +65,10 @@
 
         {{-- ANGGOTA --}}
         <div>
-            <p class="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Anggota</p>
+            <p class="px-4 text-[10px] font-bold text-gray-400 uppercase tracking-widest mb-4">Manajemen User</p>
             <div class="space-y-1">
-                <a href="#" 
-                   class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('pustakawan.member*') ? 'bg-[#F3F7FB] text-[#4D9BE2] font-semibold' : 'text-gray-500 hover:bg-gray-50' }}">
+                <a href="{{ route('pustakawan.member.index') }}" 
+                class="flex items-center gap-3 px-4 py-3 rounded-2xl transition-all {{ request()->routeIs('pustakawan.member*') ? 'bg-[#F3F7FB] text-[#4D9BE2] font-semibold' : 'text-gray-500 hover:bg-gray-50' }}">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" />
                     </svg>

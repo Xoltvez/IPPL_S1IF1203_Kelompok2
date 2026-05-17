@@ -73,7 +73,7 @@
         <div class="w-full overflow-x-auto">
             <table class="w-full text-left border-collapse whitespace-nowrap">
                 <thead>
-                    <tr class="bg-[#F8FAFC]/80 border-b border-gray-100 text-[#2F3951] text-xs font-bold uppercase tracking-wider">
+                    <tr class="bg-[#F8FAFC] border-b border-gray-100 text-[#2F3951] text-xs font-bold uppercase tracking-wider">
                         <th class="px-6 py-4 text-gray-400 text-center w-16">No</th>
                         <th class="px-6 py-4 text-gray-400">Nama Klasifikasi Kategori</th>
                         <th class="px-6 py-4 text-gray-400 text-center w-48">Jumlah Koleksi</th>

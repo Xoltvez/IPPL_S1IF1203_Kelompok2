@@ -65,7 +65,7 @@
         <div class="w-full overflow-x-auto custom-scrollbar">
             <table class="w-full table-auto text-left border-collapse border-gray-200 min-w-[950px]">
                 <thead>
-                    <tr class="bg-[#F8FAFC]/80 border-b border-gray-300 text-xs font-bold text-gray-400 uppercase tracking-wider">
+                    <tr class="bg-[#F8FAFC] border-b border-gray-300 text-xs font-bold text-gray-400 uppercase tracking-wider">
                         <th class="py-4 px-4 text-center w-[4%]">
                             <input type="checkbox" x-model="selectAll" @change="toggleAll()" class="w-4 h-4 text-[#4D9BE2] border-gray-300 rounded focus:ring-[#4D9BE2]/50 focus:ring-2 transition cursor-pointer">
                         </th>

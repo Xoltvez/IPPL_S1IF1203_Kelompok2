@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Models\Buku; 
 use App\Models\Kategori; 
 use Illuminate\Http\Request;
+// WAJIB: Menggunakan facade Storage untuk hapus-simpan file gambar
+use Illuminate\Support\Facades\Storage;
 
 class BukuController extends Controller
 {
@@ -13,7 +15,6 @@ class BukuController extends Controller
     {
         $search = $request->get('search');
 
-        // Mengembalikan nama variabel menjadi $datas agar sinkron dengan template Blade-mu
         $datas = Buku::with('kategori')
             ->when($search, function($query, $search) {
                 return $query->where('judul', 'like', "%{$search}%")
@@ -30,7 +31,6 @@ class BukuController extends Controller
     // Memproses penyimpanan buku baru ke database
     public function store(Request $request)
     {
-        // 1. Validasi Input Lengkap & Aman (Termasuk Status Baru)
         $request->validate([
             'isbn'         => 'required|unique:bukus,isbn',
             'judul'        => 'required|string|max:255',
@@ -40,10 +40,16 @@ class BukuController extends Controller
             'tahun_terbit' => 'nullable|integer|min:1000|max:'.now()->year,
             'stok'         => 'required|integer|min:0',
             'lokasi_rak'   => 'required|string|max:255',
-            'status'       => 'required|in:aktif,non aktif,dipinjam', // <--- VALIDASI BARU
+            'status'       => 'required|in:aktif,non aktif,dipinjam',
+            'sampul'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048', // name input dari blade tetap 'sampul'
         ]);
 
-        // 2. Simpan ke Database menggunakan cara ringkas
+        $pathCover = null;
+        if ($request->hasFile('sampul')) {
+            // File gambar disimpan ke folder 'storage/app/public/cover_buku'
+            $pathCover = $request->file('sampul')->store('cover_buku', 'public');
+        }
+
         Buku::create([
             'isbn'         => $request->isbn,
             'judul'        => $request->judul,
@@ -53,20 +59,17 @@ class BukuController extends Controller
             'stok'         => $request->stok,
             'lokasi_rak'   => $request->lokasi_rak,
             'kategori_id'  => $request->kategori_id,
-            'status'       => $request->status, // <--- BERHASIL DISIMPAN KE DB
+            'status'       => $request->status,
+            'cover_buku'   => $pathCover, // SINKRONISASI: Masuk ke kolom database 'cover_buku'
         ]);
 
-        // 3. Redirect kembali ke halaman utama dengan alert sukses
         return redirect()->route('pustakawan.buku.index')->with('success', 'Buku baru berhasil ditambahkan ke sistem MacaBae!');
     }
 
     // Menampilkan form tambah buku
     public function create(Request $request)
     {
-        // Mengambil semua kategori untuk dilist di dropdown select
         $kategoris = Kategori::all();
-        
-        // Menangkap parameter 'kategori_id' jika dikirim dari tombol show kategori
         $selectedKategoriId = $request->query('kategori_id');
 
         return view('pustakawan.buku.create', compact('kategoris', 'selectedKategoriId'));
@@ -84,9 +87,8 @@ class BukuController extends Controller
     // Memproses perubahan data buku ke database
     public function update(Request $request, $id)
     {
-        // Validasi diperketat agar data yang di-update tetap konsisten dengan aturan sistem
         $request->validate([
-            'isbn'         => 'required|unique:bukus,isbn,'.$id, // Unik kecuali untuk ID buku ini sendiri
+            'isbn'         => 'required|unique:bukus,isbn,'.$id,
             'judul'        => 'required|string|max:255',
             'kategori_id'  => 'required|exists:kategoris,id',
             'pengarang'    => 'required|string|max:255',
@@ -95,14 +97,36 @@ class BukuController extends Controller
             'stok'         => 'required|integer|min:0',
             'lokasi_rak'   => 'required|string|max:255',
             'status'       => 'required|in:aktif,non aktif,dipinjam',
+            'sampul'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
         $buku = Buku::findOrFail($id);
         
-        // Mengamankan nilai default jika field opsional dikosongkan saat edit
-        $data = $request->all();
-        $data['penerbit'] = $request->penerbit ?? '-';
-        $data['tahun_terbit'] = $request->tahun_terbit ?? now()->year;
+        // Menyusun data yang akan diupdate secara spesifik
+        $data = [
+            'isbn'         => $request->isbn,
+            'judul'        => $request->judul,
+            'kategori_id'  => $request->kategori_id,
+            'pengarang'    => $request->pengarang,
+            'penerbit'     => $request->penerbit ?? '-',
+            'tahun_terbit' => $request->tahun_terbit ?? now()->year,
+            'stok'         => $request->stok,
+            'lokasi_rak'   => $request->lokasi_rak,
+            'status'       => $request->status,
+        ];
+
+        // Cek apakah user mengupload file sampul baru
+        if ($request->hasFile('sampul')) {
+            // Hapus gambar lama dari storage jika ada
+            if ($buku->cover_buku && Storage::disk('public')->exists($buku->cover_buku)) {
+                Storage::disk('public')->delete($buku->cover_buku);
+            }
+            // Simpan gambar baru
+            $data['cover_buku'] = $request->file('sampul')->store('cover_buku', 'public');
+        } else {
+            // JIKA TIDAK UPLOAD, pertahankan path cover buku yang lama
+            $data['cover_buku'] = $buku->cover_buku;
+        }
 
         $buku->update($data);
 
@@ -113,6 +137,12 @@ class BukuController extends Controller
     public function destroy($id)
     {
         $buku = Buku::findOrFail($id);
+        
+        // Hapus file fisik gambar cover_buku sebelum datanya hilang dari DB
+        if ($buku->cover_buku && Storage::disk('public')->exists($buku->cover_buku)) {
+            Storage::disk('public')->delete($buku->cover_buku);
+        }
+
         $buku->delete();
 
         return redirect()->route('pustakawan.buku.index')->with('success', 'Buku telah berhasil dihapus dari sistem MacaBae.');
@@ -121,14 +151,19 @@ class BukuController extends Controller
     // Menghapus banyak data sekaligus (Bulk Delete)
     public function destroyMultiple(Request $request)
     {
-        // Memastikan ada ID yang dikirim
         $ids = $request->input('ids');
         
         if (!$ids || count($ids) === 0) {
             return redirect()->back()->with('error', 'Pilih minimal satu buku untuk dihapus.');
         }
 
-        // Melakukan hapus massal sekaligus
+        $bukus = Buku::whereIn('id', $ids)->get();
+        foreach ($bukus as $buku) {
+            if ($buku->cover_buku && Storage::disk('public')->exists($buku->cover_buku)) {
+                Storage::disk('public')->delete($buku->cover_buku);
+            }
+        }
+
         Buku::whereIn('id', $ids)->delete();
 
         return redirect()->route('pustakawan.buku.index')->with('success', 'Buku-buku terpilih berhasil dihapus massal!');

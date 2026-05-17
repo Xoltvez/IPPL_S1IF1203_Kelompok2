@@ -5,7 +5,7 @@
 @section('content')
 <div class="block w-full text-left clear-both" x-data="{ selectedBuku: [], selectAll: false, toggleAll() { this.selectedBuku = this.selectAll ? {{ json_encode($bukus->pluck('id')->toArray()) }} : []; } }">
     <div class="w-full bg-white rounded-2xl border border-gray shadow overflow-hidden">
-        <div class="w-full px-6 py-6 border-b border-gray-100 flex flex-row items-center justify-between gap-4 bg-white">
+        <div class="w-full px-6 py-4 border-b border-gray-100 flex flex-row items-center justify-between gap-4 bg-white">
             
             <div class="text-left py-1">
                 <h2 class="text-lg font-bold text-[#2F3951] tracking-tight leading-tight">Kategori {{ $kategori->nama_kategori }}</h2>
@@ -110,12 +110,7 @@
                     @empty
                         <tr>
                             <td colspan="8" class="text-center py-16">
-                                <div class="w-12 h-12 bg-gray-50 rounded flex items-center justify-center mx-auto text-gray-300 mb-3">
-                                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
-                                        <path stroke-linecap="round" stroke-linejoin="round" d="M12 6.042A8.967 8.967 0 006 3.75c-1.052 0-2.062.18-3 .512v14.25A8.987 8.987 0 016 18c2.305 0 4.408.867 6 2.292m0-14.25a8.966 8.966 0 016-2.292c1.052 0 2.062.18 3 .512v14.25A8.987 8.987 0 0118 18c2.305 0 4.408.867 6 2.292m-6-14.25V18" />
-                                    </svg>
-                                </div>
-                                <span class="text-sm text-gray-400 block font-medium">Belum ada koleksi buku yang terdaftar di dalam kategori <strong>{{ $kategori->nama_kategori }}</strong>.</span>
+                                <span class="text-sm text-gray-400 block  py-6">Belum ada koleksi buku yang terdaftar di dalam kategori <strong>{{ $kategori->nama_kategori }}</strong>.</span>
                             </td>
                         </tr>
                     @endforelse
