@@ -22,7 +22,7 @@ class BukuController extends Controller
                             ->orWhere('pengarang', 'like', "%{$search}%");
             })
             ->orderBy('created_at', 'desc')
-            ->paginate(10)
+            ->paginate(5)
             ->withQueryString();
         
         return view('pustakawan.buku.index', compact('datas'));

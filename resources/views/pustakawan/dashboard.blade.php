@@ -133,7 +133,7 @@
     </div>
 </div>
 
-<div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+<!-- <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
     
     <div class="lg:col-span-2 bg-white rounded-2xl border border-gray-500 p-6 shadow">
         <div class="flex items-center justify-between mb-6">
@@ -182,7 +182,7 @@
                 </div>
             @endforelse
         </div>
-    </div>
+    </div> -->
 
     <div class="bg-white rounded-2xl border border-[#AAAAAA]/10 p-6 flex flex-col justify-between shadow">
         <div>

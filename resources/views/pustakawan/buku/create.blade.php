@@ -202,7 +202,7 @@
 
             <div class="w-full flex items-center justify-end gap-3 pt-5 mt-2">
                 <a href="{{ route('pustakawan.buku.index') }}" class="px-5 py-2.5 text-gray-500 font-bold rounded-xl text-xs transition-colors whitespace-nowrap">
-                    Kembali
+                    Batal
                 </a>
                 <button type="submit" class="px-6 py-2.5 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white font-bold rounded-xl text-xs shadow-sm transition-colors whitespace-nowrap">
                     Simpan buku
