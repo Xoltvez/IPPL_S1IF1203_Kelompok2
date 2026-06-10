@@ -13,7 +13,7 @@
             </div>
             
             <div class="flex items-center gap-3 flex-shrink-0">
-                <form action="{{ route('pustakawan.buku.destroy-multiple') }}" method="POST" class="form-hapus-macabae m-0 p-0" data-nama="Semua buku yang dipilih dari kategori ini" x-show="selectedBuku.length > 0" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" style="display: none;">
+                <form action="{{ route(auth()->user()->role . '.buku.destroy-multiple') }}" method="POST" class="form-hapus-macabae m-0 p-0" data-nama="Semua buku yang dipilih dari kategori ini" x-show="selectedBuku.length > 0" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" style="display: none;">
                     @csrf
                     @method('DELETE')
                     <template x-for="id in selectedBuku">
@@ -27,14 +27,14 @@
                     </button>
                 </form>
 
-                <a href="{{ route('pustakawan.buku.create', ['kategori_id' => $kategori->id]) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl font-semibold text-xs shadow-sm transition-colors duration-200 whitespace-nowrap">
+                <a href="{{ route(auth()->user()->role . '.buku.create', ['kategori_id' => $kategori->id]) }}" class="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl font-semibold text-xs shadow-sm transition-colors duration-200 whitespace-nowrap">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-4 h-4 text-white">
                         <path fill-rule="evenodd" d="M12 3.75a.75.75 0 0 1 .75.75v6.75h6.75a.75.75 0 0 1 0 1.5h-6.75v6.75a.75.75 0 0 1-1.5 0v-6.75H4.5a.75.75 0 0 1 0-1.5h6.75V4.5a.75.75 0 0 1 .75-.75z" clip-rule="evenodd" />
                     </svg>
                     <span>Tambah Buku</span>
                 </a>
 
-                <a href="{{ route('pustakawan.kategori.index') }}" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl text-xs transition-colors whitespace-nowrap">
+                <a href="{{ route(auth()->user()->role . '.kategori.index') }}" class="px-4 py-2.5 bg-gray-100 hover:bg-gray-200 text-gray-600 font-bold rounded-xl text-xs transition-colors whitespace-nowrap">
                     Kembali
                 </a>
             </div>
@@ -89,13 +89,13 @@
                             </td>
                             <td class="px-6 py-4 text-center">
                                 <div class="flex items-center justify-center gap-2">
-                                    <a href="{{ route('pustakawan.buku.edit', $buku->id) }}" class="p-1.5 text-gray-400 hover:text-[#4D9BE2] hover:bg-[#4D9BE2]/5 rounded-lg transition" title="Edit Data Buku">
+                                    <a href="{{ route(auth()->user()->role . '.buku.edit', $buku->id) }}" class="p-1.5 text-gray-400 hover:text-[#4D9BE2] hover:bg-[#4D9BE2]/5 rounded-lg transition" title="Edit Data Buku">
                                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                             <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                         </svg>
                                     </a>
                                     
-                                    <form action="{{ route('pustakawan.buku.destroy', $buku->id) }}" method="POST" class="form-hapus-macabae inline m-0 p-0" data-nama="{{ $buku->judul }}">
+                                    <form action="{{ route(auth()->user()->role . '.buku.destroy', $buku->id) }}" method="POST" class="form-hapus-macabae inline m-0 p-0" data-nama="{{ $buku->judul }}">
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="p-1.5 text-gray-400 hover:text-rose-500 hover:bg-rose-50 rounded-lg transition border-none cursor-pointer bg-transparent" title="Hapus Buku">

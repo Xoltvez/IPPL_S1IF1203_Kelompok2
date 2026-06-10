@@ -46,7 +46,7 @@ class KategoriController extends Controller
             'nama_kategori' => $request->nama_kategori,
         ]);
 
-        return redirect()->route('pustakawan.kategori.index')->with('success', 'Kategori baru berhasil ditambahkan!');
+        return redirect()->route(auth()->user()->role . '.kategori.index')->with('success', 'Kategori baru berhasil ditambahkan!');
     }
 
     /**
@@ -87,7 +87,7 @@ class KategoriController extends Controller
             'nama_kategori' => $request->nama_kategori,
         ]);
 
-        return redirect()->route('pustakawan.kategori.index')->with('success', 'Nama kategori berhasil diperbarui!');
+        return redirect()->route(auth()->user()->role . '.kategori.index')->with('success', 'Nama kategori berhasil diperbarui!');
     }
 
     /**
@@ -99,10 +99,10 @@ class KategoriController extends Controller
         
         // Proteksi: Jika kategori masih dipakai oleh buku, jangan izinkan dihapus biar gak error
         if ($kategori->bukus()->count() > 0) {
-            return redirect()->route('pustakawan.kategori.index')->with('error', 'Kategori tidak bisa dihapus karena masih memiliki koleksi buku!');
+            return redirect()->route(auth()->user()->role . '.kategori.index')->with('error', 'Kategori tidak bisa dihapus karena masih memiliki koleksi buku!');
         }
 
         $kategori->delete();
-        return redirect()->route('pustakawan.kategori.index')->with('success', 'Kategori berhasil dihapus!');
+        return redirect()->route(auth()->user()->role . '.kategori.index')->with('success', 'Kategori berhasil dihapus!');
     }
 }

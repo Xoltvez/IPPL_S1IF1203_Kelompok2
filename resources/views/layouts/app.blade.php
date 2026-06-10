@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}" class="{{ session('theme') === 'dark' ? 'dark' : '' }}">
     <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -15,7 +15,7 @@
 
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
-    <body class="bg-[#F3F7FB] antialiased h-screen overflow-hidden text-[#2F3951]">
+    <body class="bg-[#F3F7FB] dark:bg-slate-950 antialiased h-screen overflow-hidden text-[#2F3951] dark:text-slate-100 transition-colors duration-200">
     <div class="flex h-full w-full">
         <div class="w-72 h-full flex-shrink-0 hidden md:block">
             @if(Auth::user()->role == 'pustakawan')
@@ -31,7 +31,7 @@
             @include('layouts.partials.header')
 
             <main class="rounded flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar">
-                <div style="background-color: #FEFEFE" class="rounded-sm border border-gray-100 min-h-full p-8 shadow-sm">
+                <div class="rounded-sm border border-gray-100 dark:border-slate-800 min-h-full p-8 shadow-sm bg-[#FEFEFE] dark:bg-slate-900 transition-colors duration-200">
                     @yield('content')
                 </div>
             </main>

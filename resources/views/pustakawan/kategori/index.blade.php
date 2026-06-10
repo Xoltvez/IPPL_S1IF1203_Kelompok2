@@ -6,7 +6,7 @@
 <div class="block w-full text-left clear-both" x-data="{ openCreate: false }">
 
     <div class="w-full bg-white p-4 rounded-2xl border border-gray shadow mb-6">
-        <form action="{{ route('pustakawan.kategori.index') }}" method="GET" class="w-full flex items-center gap-3">
+        <form action="{{ route(auth()->user()->role . '.kategori.index') }}" method="GET" class="w-full flex items-center gap-3">
             
             <div class="relative flex-1 flex items-center">
                 <div class="absolute left-4 text-gray-400 pointer-events-none flex items-center">
@@ -20,7 +20,7 @@
                 </button>
                 
                 @if(request('search'))
-                    <a href="{{ route('pustakawan.kategori.index') }}" class="px-5 py-2.5 text-gray-600 rounded-xl font-semibold text-sm transition whitespace-nowrap">
+                    <a href="{{ route(auth()->user()->role . '.kategori.index') }}" class="px-5 py-2.5 text-gray-600 rounded-xl font-semibold text-sm transition whitespace-nowrap">
                         Reset
                     </a>
                 @endif
@@ -37,7 +37,7 @@
          x-transition:leave-end="opacity-0 transform -translate-y-2"
          class="w-full bg-white p-5 rounded-2xl border border-gray shadow mb-6" style="display: none;">
          
-        <form action="{{ route('pustakawan.kategori.store') }}" method="POST" class="w-full flex items-center gap-3">
+        <form action="{{ route(auth()->user()->role . '.kategori.store') }}" method="POST" class="w-full flex items-center gap-3">
             @csrf
             <div class="relative flex-1">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center text-gray-400 pointer-events-none">
@@ -87,7 +87,7 @@
                             {{ $loop->iteration + ($kategoris->firstItem() - 1) }}
                         </td>
                         <td class="px-6 py-4">
-                            <a href="{{ route('pustakawan.kategori.show', $kat->id) }}" class="font-semibold text-[#2F3951] hover:text-[#4D9BE2] hover:underline flex items-center gap-2 group transition-all">
+                            <a href="{{ route(auth()->user()->role . '.kategori.show', $kat->id) }}" class="font-semibold text-[#2F3951] hover:text-[#4D9BE2] hover:underline flex items-center gap-2 group transition-all">
                                 {{ $kat->nama_kategori }}
                             </a>
                         </td>
@@ -98,13 +98,13 @@
                         </td>
                         <td class="px-6 py-4">
                             <div class="flex items-center justify-center gap-2">
-                                <a href="{{ route('pustakawan.kategori.edit', $kat->id) }}" class="p-2 text-gray-400 hover:text-amber-500 rounded-lg hover:bg-amber-50/50 transition-colors">
+                                <a href="{{ route(auth()->user()->role . '.kategori.edit', $kat->id) }}" class="p-2 text-gray-400 hover:text-amber-500 rounded-lg hover:bg-amber-50/50 transition-colors">
                                     <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-4 h-4">
                                         <path stroke-linecap="round" stroke-linejoin="round" d="M16.862 4.487l1.687-1.688a1.875 1.875 0 112.652 2.652L6.832 19.82a4.5 4.5 0 01-1.897 1.13l-2.685.8.8-2.685a4.5 4.5 0 011.13-1.897L16.863 4.487zm0 0L19.5 7.125" />
                                     </svg>
                                 </a>
 
-                                <form action="{{ route('pustakawan.kategori.destroy', $kat->id) }}" method="POST" class="form-hapus-macabae inline m-0 p-0" data-nama="{{ $kat->nama_kategori }}">
+                                <form action="{{ route(auth()->user()->role . '.kategori.destroy', $kat->id) }}" method="POST" class="form-hapus-macabae inline m-0 p-0" data-nama="{{ $kat->nama_kategori }}">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="p-2 text-gray-400 hover:text-rose-500 rounded-lg hover:bg-rose-50/50 transition-colors">

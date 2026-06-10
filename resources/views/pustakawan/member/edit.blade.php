@@ -14,7 +14,7 @@
 
     {{-- Card Form --}}
     <div class="bg-white rounded-2xl border border-gray-100 shadow p-8">
-        <form action="{{ route('pustakawan.member.update', $member->id) }}" method="POST">
+        <form action="{{ route(auth()->user()->role . '.member.update', $member->id) }}" method="POST">
             @csrf
             @method('PUT')
 
@@ -56,7 +56,7 @@
 
                 {{-- Tombol Aksi --}}
                 <div class="pt-4 flex items-center justify-end gap-3">
-                    <a href="{{ route('pustakawan.member.index') }}" class="px-5 py-2.5 text-gray-500 font-bold rounded-xl text-xs transition-colors">
+                    <a href="{{ route(auth()->user()->role . '.member.index') }}" class="px-5 py-2.5 text-gray-500 font-bold rounded-xl text-xs transition-colors">
                         Batal
                     </a>
                     <button type="submit" class="px-8 py-3 bg-[#4D9BE2] hover:bg-[#2F3951]/90 text-white rounded-xl font-semibold text-sm transition shadow-md">

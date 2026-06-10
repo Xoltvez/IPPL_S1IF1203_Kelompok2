@@ -19,11 +19,30 @@ class Buku extends Model
         'lokasi_rak',
         'status', 
         'kategori_id',
-        'cover_buku'
+        'cover_buku',
+        'deskripsi',
+        'sinopsis',
+        'lebar',
+        'panjang',
+        'berat',
+        'bahasa',
+        'halaman',
+        'jenis',
+        'tanggal_terbit'
     ];
 
     public function kategori(): BelongsTo
     {
         return $this->belongsTo(Kategori::class, 'kategori_id');
+    }
+
+    public function bookmarks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
+    public function ulasans(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Ulasan::class);
     }
 }

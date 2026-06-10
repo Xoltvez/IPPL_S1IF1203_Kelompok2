@@ -190,12 +190,12 @@
             <p class="text-xs text-gray-400 mt-1 leading-relaxed">Akses pintasan langsung untuk mempercepat alur kerja harian pelayanan MacaBae.</p>
             
             <div class="space-y-3 mt-6">
-                <a href="{{ route('pustakawan.buku.index') }}" class="shadow flex items-center gap-3 p-3 mb-3 bg-white hover:bg-[#4D9BE2]/5 rounded-xl border border-gray-500 transition shadow-sm font-medium text-sm text-[#2F3951]">
+                <a href="{{ route(auth()->user()->role . '.buku.index') }}" class="shadow flex items-center gap-3 p-3 mb-3 bg-white hover:bg-[#4D9BE2]/5 rounded-xl border border-gray-500 transition shadow-sm font-medium text-sm text-[#2F3951]">
                     <span class="w-8 h-8 bg-[#4D9BE2]/10 text-[#4D9BE2] rounded-lg flex items-center justify-center font-bold text-lg">+</span>
                     Kelola & Tambah Buku
                 </a>
                 
-                <a href="#" class="shadow flex items-center gap-3 p-3 bg-white hover:bg-rose-50/50 rounded-xl border border-gray-500 transition shadow-sm font-medium text-sm text-[#2F3951] relative">
+                <a href="{{ route(auth()->user()->role . '.peminjaman.index') }}" class="shadow flex items-center gap-3 p-3 bg-white hover:bg-rose-50/50 rounded-xl border border-gray-500 transition shadow-sm font-medium text-sm text-[#2F3951] relative">
                     <span class="w-8 h-8 bg-rose-50 text-rose-500 rounded-lg flex items-center justify-center font-bold text-lg">✓</span>
                     Validasi Peminjaman
                     @if($butuhVerifikasi > 0)

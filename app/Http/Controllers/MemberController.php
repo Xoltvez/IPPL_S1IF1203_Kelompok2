@@ -13,9 +13,15 @@ class MemberController extends Controller
 
         $members = User::where('role', 'member') // Pastikan hanya role member
             ->when($search, function($query) use ($search) {
-                $query->where(function($q) use ($search) {
+                $cleanSearch = $search;
+                if (preg_match('/^(?:#)?MBR-(\d+)$/i', $search, $matches)) {
+                    $cleanSearch = (int)$matches[1];
+                }
+
+                $query->where(function($q) use ($search, $cleanSearch) {
                     $q->where('name', 'like', "%{$search}%") // Cari berdasarkan nama
-                    ->orWhere('email', 'like', "%{$search}%"); // Cari berdasarkan email
+                    ->orWhere('email', 'like', "%{$search}%") // Cari berdasarkan email
+                    ->orWhere('id', $cleanSearch); // Cari berdasarkan ID
                 });
             })
             ->latest()
@@ -45,7 +51,7 @@ class MemberController extends Controller
             'email' => $request->email,
         ]);
 
-        return redirect()->route('pustakawan.member.index')
+        return redirect()->route(auth()->user()->role . '.member.index')
                         ->with('success', 'Data member berhasil diperbarui.');
     }
 
@@ -54,7 +60,7 @@ class MemberController extends Controller
         $member = User::findOrFail($id);
         $member->delete();
 
-        return redirect()->route('pustakawan.member.index')
+        return redirect()->route(auth()->user()->role . '.member.index')
                          ->with('success', 'Data member berhasil dihapus.');
     }
 }

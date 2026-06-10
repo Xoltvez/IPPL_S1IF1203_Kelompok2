@@ -12,7 +12,7 @@
 
     <div class="w-full bg-white rounded-2xl border border-gray-200 shadow overflow-hidden">
         
-        <form action="{{ route('pustakawan.buku.update', $buku->id) }}" method="POST" enctype="multipart/form-data" class="p-6 md:p-8 w-full m-0 flex flex-col gap-6">
+        <form action="{{ route(auth()->user()->role . '.buku.update', $buku->id) }}" method="POST" enctype="multipart/form-data" class="p-6 md:p-8 w-full m-0 flex flex-col gap-6">
             @csrf
             @method('PUT') 
 
@@ -165,6 +165,27 @@
             <div class="mt-4 w-full flex flex-col text-left">
                 <h3 class="text-xs font-bold text-[#2F3951] uppercase text-gray-400 tracking-wider mb-4 flex items-center">
                     <span class="w-1 h-3.5 bg-[#4D9BE2] rounded-full"></span>
+                    Spesifikasi & Sinopsis Buku
+                </h3>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5 w-full">
+                    <div class="flex flex-col text-left w-full md:col-span-2">
+                        <label for="deskripsi" class="text-[11px] font-bold uppercase tracking-wider mb-2">Deskripsi Buku</label>
+                        <textarea name="deskripsi" id="deskripsi" rows="3" placeholder="Masukkan deskripsi lengkap buku..." class="w-full px-4 py-2.5 border border-gray-200 focus:border-[#4D9BE2]/50 focus:bg-white rounded-xl text-sm text-[#2F3951] placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#4D9BE2]/5 transition-all">{{ old('deskripsi', $buku->deskripsi) }}</textarea>
+                        @error('deskripsi') <span class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</span> @enderror
+                    </div>
+
+                    <div class="flex flex-col text-left w-full md:col-span-2">
+                        <label for="sinopsis" class="text-[11px] font-bold uppercase tracking-wider mb-2">Sinopsis Buku</label>
+                        <textarea name="sinopsis" id="sinopsis" rows="3" placeholder="Masukkan sinopsis atau ringkasan cerita buku..." class="w-full px-4 py-2.5 border border-gray-200 focus:border-[#4D9BE2]/50 focus:bg-white rounded-xl text-sm text-[#2F3951] placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#4D9BE2]/5 transition-all">{{ old('sinopsis', $buku->sinopsis) }}</textarea>
+                        @error('sinopsis') <span class="text-xs text-rose-500 mt-1 font-medium">{{ $message }}</span> @enderror
+                    </div>
+                </div>
+            </div>
+
+            <div class="mt-4 w-full flex flex-col text-left">
+                <h3 class="text-xs font-bold text-[#2F3951] uppercase text-gray-400 tracking-wider mb-4 flex items-center">
+                    <span class="w-1 h-3.5 bg-[#4D9BE2] rounded-full"></span>
                     Manajemen Stok & Status Logistik
                 </h3>
                 
@@ -201,7 +222,7 @@
             </div>
 
             <div class="w-full flex items-center justify-end gap-3 pt-5 mt-2">
-                <a href="{{ route('pustakawan.buku.index') }}" class="px-5 py-2.5 text-gray-500 font-bold rounded-xl text-xs transition-colors whitespace-nowrap">
+                <a href="{{ route(auth()->user()->role . '.buku.index') }}" class="px-5 py-2.5 text-gray-500 font-bold rounded-xl text-xs transition-colors whitespace-nowrap">
                     Batal
                 </a>
                 

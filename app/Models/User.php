@@ -22,6 +22,12 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'foto',
+        'no_telp',
+        'notif_persetujuan',
+        'notif_pengembalian',
+        'notif_jatuh_tempo',
+        'notif_rekomendasi',
     ];
 
     /**
@@ -44,6 +50,25 @@ class User extends Authenticatable
         return [
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
+            'notif_persetujuan' => 'boolean',
+            'notif_pengembalian' => 'boolean',
+            'notif_jatuh_tempo' => 'boolean',
+            'notif_rekomendasi' => 'boolean',
         ];
+    }
+
+    public function favoritBukus(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
+    {
+        return $this->belongsToMany(Buku::class, 'favorits', 'user_id', 'buku_id')->withTimestamps();
+    }
+
+    public function bookmarks(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Bookmark::class);
+    }
+
+    public function ulasans(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(Ulasan::class);
     }
 }

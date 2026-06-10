@@ -6,6 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 
 class Peminjaman extends Model
 {
+    protected $table = 'peminjamans';
+
     protected $fillable = [
         'user_id', 'buku_id', 'tanggal_pinjam', 'tanggal_kembali', 'status'
     ];
@@ -20,5 +22,11 @@ class Peminjaman extends Model
     public function buku()
     {
         return $this->belongsTo(Buku::class);
+    }
+
+    // Relasi ke Denda
+    public function denda()
+    {
+        return $this->hasOne(Denda::class);
     }
 }

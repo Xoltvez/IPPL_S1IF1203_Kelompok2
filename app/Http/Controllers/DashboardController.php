@@ -31,7 +31,10 @@ class DashboardController extends Controller
             // Statistik Sirkulasi
             $butuhVerifikasi = DB::table('peminjamans')->where('status', 'menunggu_konfirmasi')->count();
             $sedangDipinjam = DB::table('peminjamans')->where('status', 'dipinjam')->count();
-            $totalTerlambat = 0; // Bisa dikembangkan dengan pengecekan tgl_kembali
+            $totalTerlambat = DB::table('peminjamans')
+                ->where('status', 'dipinjam')
+                ->where('tanggal_kembali', '<', \Carbon\Carbon::today()->format('Y-m-d'))
+                ->count();
 
             // Log Aktivitas Terbaru
             $aktivitasTerbaru = DB::table('peminjamans')
@@ -63,10 +66,33 @@ class DashboardController extends Controller
             $user_id = $user->id;
             $search = $request->get('search');
 
+            // Hitung denda yang sudah dicatat (belum lunas) dari pengembalian sebelumnya
+            $dendaTercatat = DB::table('dendas')
+                ->join('peminjamans', 'dendas.peminjaman_id', '=', 'peminjamans.id')
+                ->where('peminjamans.user_id', $user_id)
+                ->where('dendas.status_pembayaran', 'belum_lunas')
+                ->sum('dendas.jumlah_denda') ?? 0;
+
+            // Hitung denda berjalan untuk peminjaman aktif yang saat ini terlambat
+            $peminjamanTerlambat = DB::table('peminjamans')
+                ->where('user_id', $user_id)
+                ->where('status', 'dipinjam')
+                ->where('tanggal_kembali', '<', \Carbon\Carbon::today()->format('Y-m-d'))
+                ->get();
+
+            $dendaBerjalan = 0;
+            foreach ($peminjamanTerlambat as $pinjam) {
+                $dueDate = \Carbon\Carbon::parse($pinjam->tanggal_kembali)->startOfDay();
+                $today = \Carbon\Carbon::today();
+                $daysLate = $today->diffInDays($dueDate);
+                $dendaBerjalan += $daysLate * 1000;
+            }
+
             $stats = [
                 'total_pinjam' => DB::table('peminjamans')->where('user_id', $user_id)->count(),
                 'sedang_dipinjam' => DB::table('peminjamans')->where('user_id', $user_id)->where('status', 'dipinjam')->count(),
-                'kategori_tersedia' => Kategori::count(),
+                'total_tersimpan' => DB::table('favorits')->where('user_id', $user_id)->count(),
+                'total_denda' => $dendaTercatat + $dendaBerjalan,
             ];
 
             $kategoriList = Kategori::limit(5)->get();
@@ -84,7 +110,12 @@ class DashboardController extends Controller
                 })
                 ->latest()->limit(6)->get();
 
-            $bukuDipinjam = collect(); // Logic peminjaman aktif bisa ditaruh di sini
+            $bukuDipinjam = DB::table('peminjamans')
+                ->join('bukus', 'peminjamans.buku_id', '=', 'bukus.id')
+                ->where('peminjamans.user_id', $user_id)
+                ->where('peminjamans.status', 'dipinjam')
+                ->select('bukus.*', 'peminjamans.tanggal_kembali')
+                ->get();
 
             return view('member.dashboard', compact('bukuPopuler', 'bukuDipinjam', 'stats', 'kategoriList'));
         }
