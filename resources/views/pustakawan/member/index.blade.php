@@ -8,9 +8,14 @@
     {{-- HEADER & SEARCH --}}
     <div class="w-full bg-white p-4 rounded-2xl border border-gray-100 shadow mb-6">
         <form action="{{ route(auth()->user()->role . '.member.index') }}" method="GET" class="w-full flex items-center gap-3">
-            <div class="relative flex-1 flex items-center">                
+            <div class="relative flex-1 flex items-center">
+                <span class="absolute left-4 text-gray-400 pointer-events-none flex items-center">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                    </svg>
+                </span>
                 <input type="text" name="search" value="{{ request('search') }}" 
-                    placeholder="Cari nama anggota, email, NIM, atau scan QR..." 
+                    placeholder="Cari member atau email..." 
                     class="w-full pl-12 pr-4 py-2.5 bg-[#F8FAFC]/60 border border-gray-100 focus:border-[#4D9BE2]/50 focus:bg-white rounded-xl text-sm text-[#2F3951] placeholder-gray-400 focus:outline-none focus:ring-4 focus:ring-[#4D9BE2]/5 transition-all">
             </div>
 

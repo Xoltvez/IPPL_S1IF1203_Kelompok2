@@ -58,10 +58,25 @@
                                 <!-- Status & Days Remaining -->
                                 <td class="py-4 text-xs">
                                     @if($pinjam->status === 'menunggu_konfirmasi')
-                                        <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-600 font-bold border border-amber-100 whitespace-nowrap">
-                                            <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
-                                            Menunggu Persetujuan
-                                        </span>
+                                        @if($pinjam->isExpired())
+                                            <div class="flex flex-col items-start gap-1">
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-600 font-bold border border-rose-100 whitespace-nowrap">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                                    Kadaluwarsa
+                                                </span>
+                                                <span class="text-[10px] font-semibold text-rose-500">Batas pengambilan habis (6 jam)</span>
+                                            </div>
+                                        @else
+                                            <div class="flex flex-col items-start gap-1">
+                                                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-amber-50 text-amber-600 font-bold border border-amber-100 whitespace-nowrap">
+                                                    <span class="w-1.5 h-1.5 rounded-full bg-amber-500 animate-pulse"></span>
+                                                    Menunggu Persetujuan
+                                                </span>
+                                                <span class="text-[10px] font-bold text-amber-600 bg-amber-50/50 px-2 py-0.5 rounded border border-amber-200/40 whitespace-nowrap countdown-timer" data-deadline="{{ $pinjam->pickup_deadline->toIso8601String() }}">
+                                                    Sisa Waktu: --:--:--
+                                                </span>
+                                            </div>
+                                        @endif
                                     @else
                                         @php
                                             $today = \Carbon\Carbon::now()->startOfDay();
@@ -143,3 +158,51 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const timers = document.querySelectorAll('.countdown-timer');
+        
+        function updateTimers() {
+            timers.forEach(timer => {
+                const deadlineStr = timer.getAttribute('data-deadline');
+                if (!deadlineStr) return;
+                
+                const deadline = new Date(deadlineStr).getTime();
+                const now = new Date().getTime();
+                const diff = deadline - now;
+                
+                if (diff <= 0) {
+                    // Waktu habis, ubah status ke Kadaluwarsa
+                    const parent = timer.closest('.flex');
+                    if (parent) {
+                        parent.innerHTML = `
+                            <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-600 font-bold border border-rose-100 whitespace-nowrap">
+                                <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                                Kadaluwarsa
+                            </span>
+                            <span class="text-[10px] font-semibold text-rose-500">Batas pengambilan habis (6 jam)</span>
+                        `;
+                    }
+                    return;
+                }
+                
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                const hDisplay = String(hours).padStart(2, '0');
+                const mDisplay = String(minutes).padStart(2, '0');
+                const sDisplay = String(seconds).padStart(2, '0');
+                
+                timer.textContent = `Sisa Waktu: ${hDisplay}:${mDisplay}:${sDisplay}`;
+            });
+        }
+        
+        updateTimers();
+        setInterval(updateTimers, 1000);
+    });
+</script>
+@endpush
+

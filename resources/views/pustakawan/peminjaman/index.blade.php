@@ -131,9 +131,23 @@
                             {{-- STATUS / SISA HARI --}}
                             <td class="px-6 py-4 text-center">
                                 @if($peminjaman->status === 'menunggu_konfirmasi')
-                                    <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold text-amber-600 bg-amber-50 border border-amber-100 whitespace-nowrap">
-                                        Menunggu Persetujuan
-                                    </span>
+                                    @if($peminjaman->isExpired())
+                                        <div class="flex flex-col items-center gap-1">
+                                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 whitespace-nowrap">
+                                                Kadaluwarsa
+                                            </span>
+                                            <span class="text-[10px] font-semibold text-rose-500">Waktu Pengambilan Habis</span>
+                                        </div>
+                                    @else
+                                        <div class="flex flex-col items-center gap-1" id="status-container-{{ $peminjaman->id }}">
+                                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold text-amber-600 bg-amber-50 border border-amber-100 whitespace-nowrap">
+                                                Menunggu Persetujuan
+                                            </span>
+                                            <span class="text-[10px] font-bold text-amber-600 bg-amber-50/50 px-2 py-0.5 rounded border border-amber-200/40 whitespace-nowrap countdown-timer" data-id="{{ $peminjaman->id }}" data-deadline="{{ $peminjaman->pickup_deadline->toIso8601String() }}">
+                                                Sisa Waktu: --:--:--
+                                            </span>
+                                        </div>
+                                    @endif
                                 @else
                                     @if($isOverdue)
                                         <div class="flex flex-col items-center gap-1">
@@ -155,19 +169,28 @@
                             {{-- AKSI KEMBALI --}}
                             <td class="px-6 py-4 text-center">
                                 @if($peminjaman->status === 'menunggu_konfirmasi')
-                                    <div class="flex items-center justify-center gap-2">
-                                        <form action="{{ route(auth()->user()->role . '.peminjaman.setujui', $peminjaman->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui peminjaman ini?')">
-                                            @csrf
-                                            <button type="submit" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap cursor-pointer">
-                                                Setujui
-                                            </button>
-                                        </form>
-                                        <form action="{{ route(auth()->user()->role . '.peminjaman.tolak', $peminjaman->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menolak peminjaman ini?')">
-                                            @csrf
-                                            <button type="submit" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap cursor-pointer">
-                                                Tolak
-                                            </button>
-                                        </form>
+                                    <div class="flex items-center justify-center gap-2" id="action-container-{{ $peminjaman->id }}">
+                                        @if($peminjaman->isExpired())
+                                            <form action="{{ route(auth()->user()->role . '.peminjaman.tolak', $peminjaman->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengajuan kadaluwarsa ini?')">
+                                                @csrf
+                                                <button type="submit" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap cursor-pointer">
+                                                    Batalkan (Kadaluwarsa)
+                                                </button>
+                                            </form>
+                                        @else
+                                            <form action="{{ route(auth()->user()->role . '.peminjaman.setujui', $peminjaman->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menyetujui peminjaman ini?')">
+                                                @csrf
+                                                <button type="submit" class="px-3 py-1.5 bg-emerald-500 hover:bg-emerald-600 text-white rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap cursor-pointer">
+                                                    Setujui
+                                                </button>
+                                            </form>
+                                            <form action="{{ route(auth()->user()->role . '.peminjaman.tolak', $peminjaman->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menolak peminjaman ini?')">
+                                                @csrf
+                                                <button type="submit" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap cursor-pointer">
+                                                    Tolak
+                                                </button>
+                                            </form>
+                                        @endif
                                     </div>
                                 @else
                                     <form action="{{ route('member.peminjaman.kembali', $peminjaman->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menyelesaikan peminjaman ini atas nama member?')">
@@ -205,3 +228,74 @@
 
 </div>
 @endsection
+
+@push('scripts')
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const timers = document.querySelectorAll('.countdown-timer');
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        const csrfToken = csrfMeta ? csrfMeta.getAttribute('content') : '';
+        
+        function updateTimers() {
+            timers.forEach(timer => {
+                const deadlineStr = timer.getAttribute('data-deadline');
+                const id = timer.getAttribute('data-id');
+                if (!deadlineStr || !id) return;
+                
+                const deadline = new Date(deadlineStr).getTime();
+                const now = new Date().getTime();
+                const diff = deadline - now;
+                
+                if (diff <= 0) {
+                    // Waktu habis, ubah status ke Kadaluwarsa
+                    const statusContainer = document.getElementById(`status-container-${id}`);
+                    if (statusContainer) {
+                        statusContainer.innerHTML = `
+                            <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 whitespace-nowrap">
+                                Kadaluwarsa
+                            </span>
+                            <span class="text-[10px] font-semibold text-rose-500 mt-1">Waktu Pengambilan Habis</span>
+                        `;
+                    }
+                    
+                    const actionContainer = document.getElementById(`action-container-${id}`);
+                    if (actionContainer) {
+                        const tolakForm = actionContainer.querySelector('form[action$="/tolak"]');
+                        let actionUrl = '';
+                        if (tolakForm) {
+                            actionUrl = tolakForm.getAttribute('action');
+                        } else {
+                            const role = "{{ auth()->user()->role }}";
+                            actionUrl = `/${role}/peminjaman/${id}/tolak`;
+                        }
+                        
+                        actionContainer.innerHTML = `
+                            <form action="${actionUrl}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin membatalkan pengajuan kadaluwarsa ini?')">
+                                <input type="hidden" name="_token" value="${csrfToken}">
+                                <button type="submit" class="px-3 py-1.5 bg-rose-500 hover:bg-rose-600 text-white rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap cursor-pointer">
+                                    Batalkan (Kadaluwarsa)
+                                </button>
+                            </form>
+                        `;
+                    }
+                    return;
+                }
+                
+                const hours = Math.floor(diff / (1000 * 60 * 60));
+                const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+                const seconds = Math.floor((diff % (1000 * 60)) / 1000);
+                
+                const hDisplay = String(hours).padStart(2, '0');
+                const mDisplay = String(minutes).padStart(2, '0');
+                const sDisplay = String(seconds).padStart(2, '0');
+                
+                timer.textContent = `Sisa Waktu: ${hDisplay}:${mDisplay}:${sDisplay}`;
+            });
+        }
+        
+        updateTimers();
+        setInterval(updateTimers, 1000);
+    });
+</script>
+@endpush
+

@@ -45,7 +45,7 @@
                 <img src="{{ asset('assets/img/brand/logo-macabae-putih.png') }}" alt="MacaBae Logo" class="h-6 object-contain">
             </div>
             <h2 class="text-xl md:text-2xl lg:text-3xl font-black leading-tight tracking-tight mt-1">
-                Nikmati Peminjaman Buku Digital MacaBae, Mudah dan Cepat!
+                Nikmati Peminjaman Buku Digital MacaBae,<br>Mudah dan Cepat!
             </h2>
             <p class="text-xs md:text-sm text-white/90 font-medium">
                 Mudah, Cepat, dan Tanpa Ribet

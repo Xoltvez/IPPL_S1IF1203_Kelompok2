@@ -29,4 +29,17 @@ class Peminjaman extends Model
     {
         return $this->hasOne(Denda::class);
     }
+
+    // Cek apakah pengajuan peminjaman sudah kadaluwarsa (lebih dari 6 jam)
+    public function isExpired()
+    {
+        return $this->status === 'menunggu_konfirmasi' && $this->created_at && $this->created_at->addHours(6)->isPast();
+    }
+
+    // Mendapatkan batas waktu pengambilan buku (6 jam setelah created_at)
+    public function getPickupDeadlineAttribute()
+    {
+        return $this->created_at ? $this->created_at->addHours(6) : null;
+    }
 }
+

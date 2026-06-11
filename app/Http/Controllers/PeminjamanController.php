@@ -265,6 +265,10 @@ class PeminjamanController extends Controller
             return back()->with('error', 'Peminjaman ini sudah diproses.');
         }
 
+        if ($peminjaman->isExpired()) {
+            return back()->with('error', 'Persetujuan gagal. Batas waktu pengambilan 6 jam sudah berakhir.');
+        }
+
         if ($peminjaman->buku->stok <= 0) {
             return back()->with('error', 'Stok buku ini sedang kosong. Tidak dapat menyetujui peminjaman.');
         }
