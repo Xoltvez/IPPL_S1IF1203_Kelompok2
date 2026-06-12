@@ -66,6 +66,15 @@ class KunjunganController extends Controller
             return back()->with('error', 'Presensi gagal. Anggota tidak ditemukan. Pastikan scan QR Code / input ID valid.');
         }
 
+        // Cek apakah member sudah melakukan presensi hari ini
+        $alreadyCheckedIn = Kunjungan::where('user_id', $user->id)
+            ->whereDate('created_at', Carbon::today())
+            ->exists();
+
+        if ($alreadyCheckedIn) {
+            return back()->with('error', "Presensi gagal. Anggota {$user->name} sudah melakukan check-in hari ini.");
+        }
+
         // Catat kunjungan
         Kunjungan::create([
             'user_id' => $user->id
