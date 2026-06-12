@@ -73,134 +73,6 @@
                     {{ $buku->sinopsis ?? 'Belum ada sinopsis atau ringkasan cerita untuk buku ini.' }}
                 </p>
             </div>
-        </div>
-
-        <!-- Right Column: Status, Specs & Reviews (lg:col-span-3) -->
-        <div class="lg:col-span-3 flex flex-col gap-6">
-            <!-- Status Card -->
-            <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
-                <div class="flex items-center justify-between mb-4">
-                    <span class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Status buku</span>
-                    <span class="text-xs font-semibold text-gray-500 dark:text-slate-400">{{ $buku->stok }}/{{ $buku->stok + 2 }} buku</span>
-                </div>
-                
-                @php
-                    $availableStockForNewLoans = $buku->stok - $activeRequestsCount;
-                @endphp
-
-                @if($buku->kategori && strtolower($buku->kategori->nama_kategori) === 'e-book')
-                    <div class="w-full py-2 bg-[#4D9BE2]/10 text-[#4D9BE2] rounded-xl font-bold text-xs text-center flex items-center justify-center gap-1.5 border border-[#4D9BE2]/20 mb-4">
-                        <span class="w-1.5 h-1.5 rounded-full bg-[#4D9BE2] animate-pulse"></span>
-                        E-Book Digital
-                    </div>
-                    <a href="{{ route('buku.read', $buku->id) }}" class="block w-full py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white text-center font-bold rounded-xl text-sm shadow transition-all transform active:scale-95">
-                        Baca E-Book
-                    </a>
-                @elseif($availableStockForNewLoans > 0 && $buku->status == 'aktif')
-                    <div class="w-full py-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 rounded-xl font-bold text-xs text-center flex items-center justify-center gap-1.5 border border-emerald-100 dark:border-emerald-900/50 mb-4">
-                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Tersedia
-                    </div>
-                    
-                    <form action="{{ route('buku.pinjam', $buku->id) }}" method="POST" class="m-0 space-y-3.5">
-                        @csrf
-                        <div class="text-left">
-                            <label for="durasi" class="block text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Durasi Peminjaman</label>
-                            <select name="durasi" id="durasi" class="w-full px-3.5 py-2.5 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] rounded-xl text-xs font-bold text-[#2F3951] dark:text-slate-100 transition-all outline-none cursor-pointer">
-                                <option value="1">1 Hari</option>
-                                <option value="2">2 Hari</option>
-                                <option value="3">3 Hari</option>
-                                <option value="4">4 Hari</option>
-                                <option value="5">5 Hari</option>
-                                <option value="6">6 Hari</option>
-                                <option value="7" selected>7 Hari (Maksimal)</option>
-                            </select>
-                        </div>
-                        <button type="submit" class="w-full py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl font-bold text-sm shadow transition-all transform active:scale-95">
-                            Pinjam buku
-                        </button>
-                    </form>
-                @else
-                    <div class="w-full py-2 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-xl font-bold text-xs text-center flex items-center justify-center gap-1.5 border border-rose-100 dark:border-rose-900/50 mb-4">
-                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                        Terpinjam
-                    </div>
-
-                    @if($isReserved)
-                        <button disabled class="w-full py-3 bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 rounded-xl font-bold text-sm cursor-not-allowed border border-gray-200 dark:border-slate-700">
-                            Sudah Direservasi
-                        </button>
-                    @else
-                        <form action="{{ route('buku.reservasi', $buku->id) }}" method="POST" class="m-0">
-                            @csrf
-                            <button type="submit" class="w-full py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl font-bold text-sm shadow transition-all transform active:scale-95">
-                                Reservasi Buku
-                            </button>
-                        </form>
-                    @endif
-                @endif
-            </div>
-
-            <!-- Detail Spesifikasi Card -->
-            <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
-                <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider mb-4">Detail buku</h3>
-                <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-xs">
-                    <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Penerbit</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->penerbit ?? '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Tanggal Terbit</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">
-                            {{ $buku->tanggal_terbit ? \Carbon\Carbon::parse($buku->tanggal_terbit)->format('d M Y') : $buku->tahun_terbit }}
-                        </p>
-                    </div>
-                    
-                    <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
-                    
-                    <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">ISBN</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->isbn }}</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Halaman</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->halaman ?? '-' }}</p>
-                    </div>
-                    
-                    <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
-                    
-                    <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Bahasa</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->bahasa ?? 'Indonesia' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Panjang</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->panjang ?? '-' }}</p>
-                    </div>
-                    
-                    <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
-                    
-                    <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Lebar</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->lebar ?? '-' }}</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Berat</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->berat ?? '-' }}</p>
-                    </div>
-                    
-                    <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
-                    
-                    <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Penulis</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->pengarang }}</p>
-                    </div>
-                    <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Jenis</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->jenis ?? 'Buku Fisik' }}</p>
-                    </div>
-                </div>
-            </div>
 
             <!-- Ulasan Buku Card -->
             <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors duration-200" x-data="{ showReviewModal: false, showAllReviewsModal: false, selectedRating: 5 }">
@@ -378,6 +250,134 @@
                             </button>
                         </div>
                         
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Status & Specs (lg:col-span-3) -->
+        <div class="lg:col-span-3 flex flex-col gap-6">
+            <!-- Status Card -->
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
+                <div class="flex items-center justify-between mb-4">
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Status buku</span>
+                    <span class="text-xs font-semibold text-gray-500 dark:text-slate-400">{{ $buku->stok }}/{{ $buku->stok + 2 }} buku</span>
+                </div>
+                
+                @php
+                    $availableStockForNewLoans = $buku->stok - $activeRequestsCount;
+                @endphp
+
+                @if($buku->kategori && strtolower($buku->kategori->nama_kategori) === 'e-book')
+                    <div class="w-full py-2 bg-[#4D9BE2]/10 text-[#4D9BE2] rounded-xl font-bold text-xs text-center flex items-center justify-center gap-1.5 border border-[#4D9BE2]/20 mb-4">
+                        <span class="w-1.5 h-1.5 rounded-full bg-[#4D9BE2] animate-pulse"></span>
+                        E-Book Digital
+                    </div>
+                    <a href="{{ route('buku.read', $buku->id) }}" class="block w-full py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white text-center font-bold rounded-xl text-sm shadow transition-all transform active:scale-95">
+                        Baca E-Book
+                    </a>
+                @elseif($availableStockForNewLoans > 0 && $buku->status == 'aktif')
+                    <div class="w-full py-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 rounded-xl font-bold text-xs text-center flex items-center justify-center gap-1.5 border border-emerald-100 dark:border-emerald-900/50 mb-4">
+                        <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                        Tersedia
+                    </div>
+                    
+                    <form action="{{ route('buku.pinjam', $buku->id) }}" method="POST" class="m-0 space-y-3.5">
+                        @csrf
+                        <div class="text-left">
+                            <label for="durasi" class="block text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Durasi Peminjaman</label>
+                            <select name="durasi" id="durasi" class="w-full px-3.5 py-2.5 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] rounded-xl text-xs font-bold text-[#2F3951] dark:text-slate-100 transition-all outline-none cursor-pointer">
+                                <option value="1">1 Hari</option>
+                                <option value="2">2 Hari</option>
+                                <option value="3">3 Hari</option>
+                                <option value="4">4 Hari</option>
+                                <option value="5">5 Hari</option>
+                                <option value="6">6 Hari</option>
+                                <option value="7" selected>7 Hari (Maksimal)</option>
+                            </select>
+                        </div>
+                        <button type="submit" class="w-full py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl font-bold text-sm shadow transition-all transform active:scale-95">
+                            Pinjam buku
+                        </button>
+                    </form>
+                @else
+                    <div class="w-full py-2 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-xl font-bold text-xs text-center flex items-center justify-center gap-1.5 border border-rose-100 dark:border-rose-900/50 mb-4">
+                        <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+                        Terpinjam
+                    </div>
+
+                    @if($isReserved)
+                        <button disabled class="w-full py-3 bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 rounded-xl font-bold text-sm cursor-not-allowed border border-gray-200 dark:border-slate-700">
+                            Sudah Direservasi
+                        </button>
+                    @else
+                        <form action="{{ route('buku.reservasi', $buku->id) }}" method="POST" class="m-0">
+                            @csrf
+                            <button type="submit" class="w-full py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl font-bold text-sm shadow transition-all transform active:scale-95">
+                                Reservasi Buku
+                            </button>
+                        </form>
+                    @endif
+                @endif
+            </div>
+
+            <!-- Detail Spesifikasi Card -->
+            <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
+                <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider mb-4">Detail buku</h3>
+                <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-xs">
+                    <div>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">Penerbit</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->penerbit ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">Tanggal Terbit</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">
+                            {{ $buku->tanggal_terbit ? \Carbon\Carbon::parse($buku->tanggal_terbit)->format('d M Y') : $buku->tahun_terbit }}
+                        </p>
+                    </div>
+                    
+                    <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
+                    
+                    <div>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">ISBN</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->isbn }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">Halaman</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->halaman ?? '-' }}</p>
+                    </div>
+                    
+                    <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
+                    
+                    <div>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">Bahasa</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->bahasa ?? 'Indonesia' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">Panjang</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->panjang ?? '-' }}</p>
+                    </div>
+                    
+                    <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
+                    
+                    <div>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">Lebar</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->lebar ?? '-' }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">Berat</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->berat ?? '-' }}</p>
+                    </div>
+                    
+                    <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
+                    
+                    <div>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">Penulis</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->pengarang }}</p>
+                    </div>
+                    <div>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">Jenis</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->jenis ?? 'Buku Fisik' }}</p>
                     </div>
                 </div>
             </div>

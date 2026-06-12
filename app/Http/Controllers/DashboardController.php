@@ -84,7 +84,7 @@ class DashboardController extends Controller
             foreach ($peminjamanTerlambat as $pinjam) {
                 $dueDate = \Carbon\Carbon::parse($pinjam->tanggal_kembali)->startOfDay();
                 $today = \Carbon\Carbon::today();
-                $daysLate = $today->diffInDays($dueDate);
+                $daysLate = $today->diffInDays($dueDate, true);
                 $dendaBerjalan += $daysLate * 1000;
             }
 

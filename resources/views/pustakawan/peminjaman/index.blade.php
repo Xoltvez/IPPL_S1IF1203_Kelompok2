@@ -24,6 +24,9 @@
     {{-- SEARCH BAR --}}
     <div class="w-full bg-white p-4 rounded-2xl border border-gray-100 shadow mb-6">
         <form action="{{ route(auth()->user()->role . '.peminjaman.index') }}" method="GET" class="w-full flex items-center gap-3">
+            @if(request('status'))
+                <input type="hidden" name="status" value="{{ request('status') }}">
+            @endif
             <div class="relative flex-1 flex items-center">
                 <span class="absolute left-4 text-gray-400 pointer-events-none flex items-center">
                     <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -41,7 +44,7 @@
                 </button>
 
                 @if(request()->filled('search'))
-                    <a href="{{ route(auth()->user()->role . '.peminjaman.index') }}" 
+                    <a href="{{ route(auth()->user()->role . '.peminjaman.index', request()->only('status')) }}" 
                     class="px-5 py-2.5 bg-rose-50 hover:bg-rose-100 text-rose-600 rounded-xl font-semibold text-sm transition flex items-center gap-2 cursor-pointer">
                         Reset
                     </a>
@@ -49,6 +52,37 @@
             </div>
         </form>
     </div>
+
+    {{-- FILTER PILLS --}}
+    <div class="flex items-center gap-3 mb-6 overflow-x-auto pb-2 no-scrollbar">
+        <!-- Semua Tab -->
+        <a href="{{ route(auth()->user()->role . '.peminjaman.index', array_merge(request()->except('status', 'page'))) }}"
+           class="px-5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 {{ !request('status') ? 'bg-[#4D9BE2] text-white shadow-sm' : 'bg-white text-gray-500 border border-gray-100 hover:bg-[#F3F7FB]' }}">
+            Semua
+        </a>
+        
+        <!-- Menunggu Persetujuan Tab -->
+        <a href="{{ route(auth()->user()->role . '.peminjaman.index', array_merge(request()->except('page'), ['status' => 'menunggu_konfirmasi'])) }}"
+           class="px-5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 {{ request('status') === 'menunggu_konfirmasi' ? 'bg-[#4D9BE2] text-white shadow-sm' : 'bg-white text-gray-500 border border-gray-100 hover:bg-[#F3F7FB]' }}">
+            Menunggu Persetujuan
+        </a>
+        
+        <!-- Setelah Disetujui Tab -->
+        <a href="{{ route(auth()->user()->role . '.peminjaman.index', array_merge(request()->except('page'), ['status' => 'dipinjam'])) }}"
+           class="px-5 py-2.5 rounded-xl text-xs font-semibold whitespace-nowrap transition-all duration-200 {{ request('status') === 'dipinjam' ? 'bg-[#4D9BE2] text-white shadow-sm' : 'bg-white text-gray-500 border border-gray-100 hover:bg-[#F3F7FB]' }}">
+            Setelah Disetujui
+        </a>
+    </div>
+
+    <style>
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
 
     {{-- TABLE PEMINJAMAN AKTIF --}}
     <div class="bg-white rounded-2xl border border-gray-100 shadow overflow-hidden">
@@ -119,7 +153,7 @@
                             <td class="px-6 py-4 text-sm text-gray-500 font-medium">
                                 @if($peminjaman->status === 'menunggu_konfirmasi')
                                     @php
-                                        $duration = \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->diffInDays(\Carbon\Carbon::parse($peminjaman->tanggal_pinjam));
+                                        $duration = \Carbon\Carbon::parse($peminjaman->tanggal_kembali)->diffInDays(\Carbon\Carbon::parse($peminjaman->tanggal_pinjam), true);
                                         if ($duration <= 0) $duration = 7;
                                     @endphp
                                     <span class="text-gray-400 font-medium">{{ $duration }} Hari</span>

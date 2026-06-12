@@ -68,10 +68,10 @@
                 <tbody class="divide-y divide-gray-50 text-sm text-[#2F3951]">
                     @forelse($pengembalians as $pengembalian)
                         @php
-                            $dueDate = \Carbon\Carbon::parse($pengembalian->tanggal_kembali);
-                            $returnDate = \Carbon\Carbon::parse($pengembalian->updated_at);
+                            $dueDate = \Carbon\Carbon::parse($pengembalian->tanggal_kembali)->startOfDay();
+                            $returnDate = \Carbon\Carbon::parse($pengembalian->updated_at)->startOfDay();
                             $isLate = $returnDate->gt($dueDate);
-                            $daysLate = $isLate ? $returnDate->diffInDays($dueDate) : 0;
+                            $daysLate = $isLate ? $returnDate->diffInDays($dueDate, true) : 0;
                         @endphp
                         <tr class="hover:bg-gray-50/50 transition-colors">
                             <td class="px-6 py-4 text-center font-medium text-gray-400">
@@ -143,6 +143,15 @@
                                                 </button>
                                             </form>
                                         @endif
+                                    </div>
+                                @elseif($isLate && $daysLate > 0)
+                                    <div class="flex flex-col items-center gap-1">
+                                        <span class="text-xs font-bold text-rose-600 bg-rose-50 border border-rose-100 px-2 py-0.5 rounded-lg whitespace-nowrap">
+                                            Rp {{ number_format($daysLate * 1000, 0, ',', '.') }}
+                                        </span>
+                                        <span class="text-[9px] font-bold text-rose-500 bg-rose-50/50 px-1.5 py-0.5 rounded border border-rose-200/30 uppercase">
+                                            Terlambat {{ $daysLate }} Hari
+                                        </span>
                                     </div>
                                 @else
                                     <span class="inline-flex items-center justify-center px-2.5 py-1 rounded-lg text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 whitespace-nowrap">

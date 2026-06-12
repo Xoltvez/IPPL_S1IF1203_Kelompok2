@@ -6,9 +6,9 @@
 <div class="w-full flex flex-col Box-border">
 
     <!-- Search & Filter Bar (Mockup Style) -->
-    <div class="mb-6 flex items-center gap-4">
-        <!-- Search Input with Left Icon & Spacious Padding -->
-        <form action="{{ route('member.katalog') }}" method="GET" class="flex-1 flex items-center gap-4 m-0">
+    <div x-data="{ openDetailSearch: false }" class="w-full mb-6">
+        <form action="{{ route('member.katalog') }}" method="GET" class="w-full flex items-center gap-4 m-0">
+            <!-- Search Input with Left Icon & Spacious Padding -->
             <div class="relative flex-1">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none text-gray-400">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -19,7 +19,14 @@
                        name="search" 
                        value="{{ request('search') }}"
                        placeholder="Cari buku yang kamu mau" 
-                       class="w-full pl-12 pr-4 py-3 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] rounded-2xl text-sm transition-all outline-none dark:text-slate-100">
+                       class="w-full pl-12 pr-12 py-3 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] rounded-2xl text-sm transition-all outline-none dark:text-slate-100">
+                
+                <!-- Filter Button Inside Input -->
+                <button type="button" @click="openDetailSearch = true" class="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-[#4D9BE2] p-1.5 rounded-lg transition-colors cursor-pointer" title="Pencarian Detail">
+                    <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6V4m0 2a2 2 0 100 4m0-4a2 2 0 110 4m-6 8a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4m6 6v10m6-2a2 2 0 100-4m0 4a2 2 0 110-4m0 4v2m0-6V4" />
+                    </svg>
+                </button>
             </div>
 
             <!-- Search Button -->
@@ -27,6 +34,69 @@
                 Cari
             </button>
         </form>
+
+        <!-- Detailed Search Modal -->
+        <div x-show="openDetailSearch" 
+             class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50"
+             x-transition:enter="transition ease-out duration-300"
+             x-transition:enter-start="opacity-0 scale-95"
+             x-transition:enter-end="opacity-100 scale-100"
+             x-transition:leave="transition ease-in duration-200"
+             x-transition:leave-start="opacity-100 scale-100"
+             x-transition:leave-end="opacity-0 scale-95"
+             style="display: none;">
+             
+             <div class="bg-white dark:bg-slate-900 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-2xl w-full max-w-md overflow-hidden text-left"
+                  @click.away="openDetailSearch = false">
+                  
+                  <!-- Modal Header -->
+                  <div class="px-6 py-4 border-b border-gray-100 dark:border-slate-800 flex items-center justify-between">
+                      <h3 class="text-base font-bold text-[#2F3951] dark:text-slate-100">Pencarian Detil Buku</h3>
+                      <button type="button" @click="openDetailSearch = false" class="text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 font-bold text-xl cursor-pointer">&times;</button>
+                  </div>
+                  
+                  <!-- Modal Body / Form -->
+                  <form action="{{ route('member.katalog') }}" method="GET" class="p-6 space-y-4">
+                      <!-- Jenis Dropdown -->
+                      <div>
+                          <label for="jenis" class="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Jenis</label>
+                          <select name="jenis" id="jenis" class="w-full px-4 py-2.5 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] outline-none dark:text-slate-100">
+                              <option value="">Pilih jenis buku</option>
+                              <option value="Buku Fisik" {{ request('jenis') === 'Buku Fisik' ? 'selected' : '' }}>Buku Fisik</option>
+                              <option value="E-Book Digital" {{ request('jenis') === 'E-Book Digital' ? 'selected' : '' }}>E-Book Digital</option>
+                          </select>
+                      </div>
+                      
+                      <!-- Judul -->
+                      <div>
+                          <label for="judul" class="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Judul</label>
+                          <input type="text" name="judul" id="judul" value="{{ request('judul') }}" placeholder="Judul buku" class="w-full px-4 py-2.5 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] outline-none dark:text-slate-100">
+                      </div>
+                      
+                      <!-- Pengarang -->
+                      <div>
+                          <label for="pengarang" class="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Pengarang</label>
+                          <input type="text" name="pengarang" id="pengarang" value="{{ request('pengarang') }}" placeholder="Nama pengarang buku" class="w-full px-4 py-2.5 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] outline-none dark:text-slate-100">
+                      </div>
+                      
+                      <!-- Penerbit -->
+                      <div>
+                          <label for="penerbit" class="block text-xs font-bold text-gray-500 dark:text-slate-400 mb-2 uppercase tracking-wider">Penerbit</label>
+                          <input type="text" name="penerbit" id="penerbit" value="{{ request('penerbit') }}" placeholder="Penerbit buku" class="w-full px-4 py-2.5 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 rounded-xl text-sm focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] outline-none dark:text-slate-100">
+                      </div>
+                      
+                      <!-- Action Buttons -->
+                      <div class="flex items-center justify-end gap-3 pt-2">
+                          <button type="button" @click="openDetailSearch = false" class="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 dark:bg-slate-800 dark:hover:bg-slate-750 text-gray-600 dark:text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer">
+                              Batal
+                          </button>
+                          <button type="submit" class="px-5 py-2.5 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl text-xs font-bold transition shadow-sm cursor-pointer">
+                              Cari Buku
+                          </button>
+                      </div>
+                  </form>
+             </div>
+        </div>
     </div>
 
     <!-- Blue Promo Banner (Text-Only Style) -->

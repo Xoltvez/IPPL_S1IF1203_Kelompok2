@@ -155,11 +155,11 @@
                         <h3 class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider w-full text-left">Kartu Anggota Digital</h3>
                         
                         <!-- Physical Card Representation -->
-                        <div class="relative w-full max-w-[340px] h-[215px] bg-gradient-to-br from-[#4D9BE2] via-[#2F80ED] to-[#1E40AF] rounded-3xl p-5 text-white shadow-xl border border-white/10 overflow-hidden flex flex-col justify-between select-none">
+                        <div id="digital-member-card" class="relative w-full max-w-[340px] h-[215px] bg-gradient-to-br from-[#4D9BE2] via-[#2F80ED] to-[#1E40AF] rounded-3xl p-5 text-white shadow-xl border border-white/10 overflow-hidden flex flex-col justify-between select-none">
                             
                             <!-- Glowing Aura Ornaments -->
-                            <div class="absolute -right-12 -top-12 w-44 h-44 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
-                            <div class="absolute -left-12 -bottom-12 w-44 h-44 bg-blue-300/10 rounded-full blur-2xl pointer-events-none"></div>
+                            <div data-html2canvas-ignore="true" class="absolute -right-12 -top-12 w-44 h-44 bg-white/10 rounded-full blur-2xl pointer-events-none"></div>
+                            <div data-html2canvas-ignore="true" class="absolute -left-12 -bottom-12 w-44 h-44 bg-blue-300/10 rounded-full blur-2xl pointer-events-none"></div>
 
                             <!-- Card Header -->
                             <div class="flex items-center justify-between z-10">
@@ -176,7 +176,7 @@
                             <div class="flex items-center justify-between gap-4 z-10">
                                 <!-- Member Details -->
                                 <div class="min-w-0 flex-1 space-y-1">
-                                    <p class="text-sm font-extrabold truncate text-white/95 leading-tight">{{ $user->name }}</p>
+                                    <p class="text-sm font-extrabold text-white/95 leading-normal overflow-visible">{{ $user->name }}</p>
                                     <p class="text-[11px] font-black text-blue-200/90 tracking-wide">#MBR-{{ str_pad($user->id, 4, '0', STR_PAD_LEFT) }}</p>
                                     
                                     <div class="pt-2">
@@ -208,6 +208,14 @@
                                 </div>
                             </div>
                         </div>
+
+                        <!-- Tombol Download Barcode -->
+                        <button type="button" id="download-qr-btn" class="mt-4 w-full max-w-[340px] inline-flex items-center justify-center gap-2 px-5 py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-2xl text-xs font-bold transition shadow-sm cursor-pointer transform active:scale-95">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                            </svg>
+                            Unduh Kartu Anggota
+                        </button>
 
                         <p class="text-[10px] text-gray-400 dark:text-slate-500 font-semibold text-center mt-2">
                             Tunjukkan QR Code ini kepada pustakawan saat berkunjung offline untuk presensi dan transaksi cepat.
@@ -654,15 +662,35 @@
 
 @push('scripts')
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        new QRious({
+        const qr = new QRious({
             element: document.getElementById('member-qr'),
             value: '{{ $user->id }}',
             size: 160,
-            backgroundAlpha: 0,
+            background: '#ffffff',
             foreground: '#0f172a'
         });
+
+        const downloadBtn = document.getElementById('download-qr-btn');
+        if (downloadBtn) {
+            downloadBtn.addEventListener('click', function() {
+                const card = document.getElementById('digital-member-card');
+                if (card) {
+                    html2canvas(card, {
+                        scale: 3, // Sangat tajam saat diunduh
+                        useCORS: true,
+                        backgroundColor: null // Transparan di luar lengkungan sudut kartu
+                    }).then(canvas => {
+                        const link = document.createElement('a');
+                        link.download = 'MacaBae_Member_Card_{{ str_pad($user->id, 4, "0", STR_PAD_LEFT) }}.png';
+                        link.href = canvas.toDataURL('image/png');
+                        link.click();
+                    });
+                }
+            });
+        }
     });
 </script>
 @endpush

@@ -86,7 +86,7 @@
 
                                         @if($isOverdue)
                                             @php
-                                                $daysLate = $today->diffInDays($dueDate);
+                                                $daysLate = $today->diffInDays($dueDate, true);
                                             @endphp
                                             <div class="flex flex-col items-start gap-1">
                                                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-rose-50 text-rose-600 font-bold border border-rose-100">
@@ -99,7 +99,7 @@
                                             </div>
                                         @else
                                             @php
-                                                $daysRemaining = $today->diffInDays($dueDate);
+                                                $daysRemaining = $today->diffInDays($dueDate, true);
                                             @endphp
                                             <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-emerald-50 text-emerald-600 font-bold border border-emerald-100">
                                                 <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>

@@ -122,14 +122,12 @@ class PeminjamanController extends Controller
         $dendaAmount = 0;
 
         DB::transaction(function () use ($peminjaman, &$dendaAmount) {
-            $today = Carbon::now();
-            $dueDate = Carbon::parse($peminjaman->tanggal_kembali);
+            $today = Carbon::today();
+            $dueDate = Carbon::parse($peminjaman->tanggal_kembali)->startOfDay();
             
             // Hitung selisih hari antara tanggal kembali (hari ini) dan jatuh tempo
-            // Jika hari ini melebihi jatuh tempo, diffInDays bernilai negatif (jika menggunakan parameter default false)
-            // Namun agar aman, kita bandingkan tgl secara langsung
             if ($today->gt($dueDate)) {
-                $daysLate = $today->diffInDays($dueDate);
+                $daysLate = $today->diffInDays($dueDate, true);
                 // Denda Rp 1.000 per hari keterlambatan
                 $dendaAmount = $daysLate * 1000;
             }
@@ -188,9 +186,14 @@ class PeminjamanController extends Controller
     public function pustakawanPeminjaman(Request $request)
     {
         $search = $request->get('search');
+        $status = $request->get('status');
 
         $peminjamans = Peminjaman::with(['user', 'buku'])
-            ->whereIn('status', ['dipinjam', 'menunggu_konfirmasi'])
+            ->when($status, function($query, $status) {
+                return $query->where('status', $status);
+            }, function($query) {
+                return $query->whereIn('status', ['dipinjam', 'menunggu_konfirmasi']);
+            })
             ->when($search, function($query, $search) {
                 $cleanSearch = $search;
                 if (preg_match('/^(?:#)?MBR-(\d+)$/i', $search, $matches)) {
@@ -207,12 +210,11 @@ class PeminjamanController extends Controller
                     });
                 });
             })
-            ->orderBy('status', 'desc') // meletakkan 'menunggu_konfirmasi' di atas
-            ->orderBy('tanggal_pinjam', 'desc')
+            ->orderBy('created_at', 'desc')
             ->paginate(15)
             ->withQueryString();
 
-        return view('pustakawan.peminjaman.index', compact('peminjamans', 'search'));
+        return view('pustakawan.peminjaman.index', compact('peminjamans', 'search', 'status'));
     }
 
     // Menampilkan riwayat pengembalian buku untuk pustakawan/admin
@@ -277,7 +279,7 @@ class PeminjamanController extends Controller
             // Hitung durasi awal yang diajukan member
             $startDate = Carbon::parse($peminjaman->tanggal_pinjam);
             $endDate = Carbon::parse($peminjaman->tanggal_kembali);
-            $duration = $endDate->diffInDays($startDate);
+            $duration = $endDate->diffInDays($startDate, true);
             if ($duration <= 0) {
                 $duration = 7; // fallback
             }
