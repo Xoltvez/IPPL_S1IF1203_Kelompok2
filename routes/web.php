@@ -67,7 +67,8 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::resource('member', MemberController::class);
     Route::get('peminjaman', [\App\Http\Controllers\PeminjamanController::class, 'pustakawanPeminjaman'])->name('peminjaman.index');
     Route::get('pengembalian', [\App\Http\Controllers\PeminjamanController::class, 'pustakawanPengembalian'])->name('pengembalian.index');
-    Route::post('denda/{id}/bayar', [\App\Http\Controllers\PeminjamanController::class, 'bayarDenda'])->name('denda.bayar');
+    Route::get('denda', [\App\Http\Controllers\DendaController::class, 'index'])->name('denda.index');
+    Route::post('denda/{id}/bayar', [\App\Http\Controllers\DendaController::class, 'bayar'])->name('denda.bayar');
     Route::post('peminjaman/{id}/setujui', [\App\Http\Controllers\PeminjamanController::class, 'setujui'])->name('peminjaman.setujui');
     Route::post('peminjaman/{id}/tolak', [\App\Http\Controllers\PeminjamanController::class, 'tolak'])->name('peminjaman.tolak');
     
@@ -88,7 +89,8 @@ Route::middleware(['auth', 'role:pustakawan'])->prefix('pustakawan')->name('pust
     Route::resource('member', MemberController::class);
     Route::get('peminjaman', [\App\Http\Controllers\PeminjamanController::class, 'pustakawanPeminjaman'])->name('peminjaman.index');
     Route::get('pengembalian', [\App\Http\Controllers\PeminjamanController::class, 'pustakawanPengembalian'])->name('pengembalian.index');
-    Route::post('denda/{id}/bayar', [\App\Http\Controllers\PeminjamanController::class, 'bayarDenda'])->name('denda.bayar');
+    Route::get('denda', [\App\Http\Controllers\DendaController::class, 'index'])->name('denda.index');
+    Route::post('denda/{id}/bayar', [\App\Http\Controllers\DendaController::class, 'bayar'])->name('denda.bayar');
     Route::post('peminjaman/{id}/setujui', [\App\Http\Controllers\PeminjamanController::class, 'setujui'])->name('peminjaman.setujui');
     Route::post('peminjaman/{id}/tolak', [\App\Http\Controllers\PeminjamanController::class, 'tolak'])->name('peminjaman.tolak');
     

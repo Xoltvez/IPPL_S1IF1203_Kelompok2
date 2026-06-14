@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Denda extends Model
 {
     protected $fillable = [
-        'peminjaman_id', 'jumlah_denda', 'status_pembayaran'
+        'peminjaman_id', 'jumlah_denda', 'status_pembayaran', 'metode_pembayaran'
     ];
 
     // Relasi ke Peminjaman
