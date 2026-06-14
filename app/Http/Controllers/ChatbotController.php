@@ -4,259 +4,149 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 use App\Models\Buku;
 use App\Models\Peminjaman;
 use App\Models\Denda;
+use Carbon\Carbon;
 
 class ChatbotController extends Controller
 {
     public function respond(Request $request)
     {
-        $message = strtolower(trim($request->input('message', '')));
+        $message = trim($request->input('message', ''));
         $user    = Auth::user();
 
         if (empty($message)) {
             return response()->json(['reply' => 'Ketik pesanmu ya! 😊']);
         }
 
-        // ── Sapa ──────────────────────────────────────────────────────────────
-        if ($this->matches($message, ['halo', 'hai', 'hello', 'hi', 'hei', 'selamat', 'pagi', 'siang', 'sore', 'malam', 'hey'])) {
-            $nama = $user ? explode(' ', $user->name)[0] : 'Kak';
-            return response()->json([
-                'reply' =>
-                "Halo, {$nama}! 👋 Aku <b>MacaBot</b>, asisten perpustakaan MacaBae.\n\n" .
-                    "Aku bisa bantu kamu:\n" .
-                    "📚 <b>Cari buku</b> — ketik: <i>cari [judul/pengarang]</i>\n" .
-                    "📋 <b>Pinjaman aktif</b> — ketik: <i>pinjaman saya</i>\n" .
-                    "💸 <b>Info denda</b> — ketik: <i>denda saya</i>\n" .
-                    "❓ <b>Panduan</b> — ketik: <i>cara pinjam</i>\n\n" .
-                    "Ada yang bisa dibantu? 😊"
+        // 1. Gather Context (Data Real-time)
+        $context = $this->gatherContext($user);
+
+        // 2. System Instruction (Prompt Utama AI)
+        $systemPrompt = "Kamu adalah MacaBot 🤖, asisten AI dari perpustakaan digital MacaBae. " .
+            "Jawab pertanyaan dengan ramah, santai, dan profesional. Gunakan Markdown standard (**tebal**, *miring*) jika perlu. " .
+            "Gunakan enter biasa untuk baris baru. JANGAN pernah menggunakan tag HTML apa pun. " .
+            "Berikut adalah informasi real-time tentang pengguna yang berbicara denganmu:\n\n" . 
+            $context . "\n\n" .
+            "Tugas Utama: Jawab pertanyaan pengguna HANYA berdasarkan data di atas. " .
+            "Jika pengguna bertanya tentang buku, rekomendasikan atau cari dari 'KATALOG BUKU TERSEDIA'. Jika stok 0, beritahu bahwa stok habis dan pengguna bisa melakukan 'Reservasi' di detail buku. " .
+            "Jika pengguna bertanya tentang pinjamannya, bacakan 'STATUS PINJAMAN AKTIF'. " .
+            "Jika pengguna bertanya tentang denda, bacakan 'STATUS DENDA'. " .
+            "Aturan perpustakaan: Peminjaman 1-7 hari, denda keterlambatan Rp 1.000/hari, maksimal meminjam 5 buku sekaligus. " .
+            "Jam operasional (jika ditanya datang langsung): Senin-Jumat (08.00-16.00), Sabtu (09.00-13.00), Minggu tutup. " .
+            "Fitur website: sarankan membuka halaman katalog buku di '/katalog', riwayat lengkap di '/riwayat', atau profil di '/pengaturan'. " .
+            "JANGAN memberikan informasi palsu atau merekomendasikan buku yang tidak ada dalam daftar katalog di atas.";
+
+        $apiKey = env('GEMINI_API_KEY');
+        if (!$apiKey) {
+            return response()->json(['reply' => 'Maaf, kunci API Gemini belum dikonfigurasi di file .env. Hubungi administrator.']);
+        }
+
+        // 3. Panggil API Gemini Flash (Alias Dinamis Terbaru)
+        try {
+            $response = Http::withoutVerifying()->withHeaders([
+                'Content-Type' => 'application/json',
+            ])->post("https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key={$apiKey}", [
+                'system_instruction' => [
+                    'parts' => [
+                        ['text' => $systemPrompt]
+                    ]
+                ],
+                'contents' => [
+                    [
+                        'role' => 'user',
+                        'parts' => [
+                            ['text' => $message]
+                        ]
+                    ]
+                ]
             ]);
+
+            if ($response->successful()) {
+                $data = $response->json();
+                $replyText = $data['candidates'][0]['content']['parts'][0]['text'] ?? 'Maaf, aku tidak bisa memproses balasan saat ini. 😔';
+                
+                // 1. Konversi markdown bold dan italic
+                $replyText = preg_replace('/\*\*(.*?)\*\*/s', '<b>$1</b>', $replyText);
+                $replyText = preg_replace('/(?<!\w)\*(?!\s)(.*?)(?<!\s)\*(?!\w)/s', '<i>$1</i>', $replyText);
+                
+                // 2. Konversi bullet points * menjadi •
+                $replyText = preg_replace('/^\s*\*\s/m', '• ', $replyText);
+                
+                // 3. Ubah literal text '\n' menjadi newline asli
+                $replyText = str_replace(['\n', '\r'], "\n", $replyText);
+                
+                // 4. Escape semua karakter HTML untuk mencegah tag error di browser (menghilangkan teks)
+                $replyText = htmlspecialchars($replyText, ENT_NOQUOTES, 'UTF-8');
+                
+                // 5. Kembalikan tag <b> dan <i> yang sudah kita buat
+                $replyText = str_replace(['&lt;b&gt;', '&lt;/b&gt;', '&lt;i&gt;', '&lt;/i&gt;'], ['<b>', '</b>', '<i>', '</i>'], $replyText);
+                
+                // 6. Hapus spasi paragraf berlebih (maksimal 2 newline)
+                $replyText = preg_replace("/\n{3,}/", "\n\n", $replyText);
+                
+                return response()->json(['reply' => trim($replyText)]);
+            } else {
+                $errorMsg = $response->json()['error']['message'] ?? 'Unknown Error';
+                return response()->json(['reply' => "Sistem AI Google sedang menolak permintaan. Kode: {$response->status()} - {$errorMsg} 😔"]);
+            }
+        } catch (\Exception $e) {
+            return response()->json(['reply' => 'Waduh, koneksi ke otak AI-ku terputus. Coba periksa koneksi internet server atau API key. 🔌']);
         }
+    }
 
-        // ── Cari Buku ─────────────────────────────────────────────────────────
-        if ($this->matches($message, ['cari', 'search', 'find', 'cari buku', 'ada buku'])) {
-            $keyword = preg_replace('/^(cari buku|cari|search|find|ada buku)\s*/i', '', $request->input('message'));
-            $keyword = trim($keyword);
+    private function gatherContext($user)
+    {
+        $context = "--- DATA PENGGUNA ---\n";
+        $context .= "Nama Pengguna: " . ($user ? $user->name : "Tamu") . "\n";
+        $context .= "Waktu Sekarang: " . Carbon::now()->translatedFormat('l, d F Y H:i') . "\n\n";
 
-            if (strlen($keyword) < 2) {
-                return response()->json([
-                    'reply' =>
-                    "Silakan ketik judul atau nama pengarang setelah kata \"cari\".\n" .
-                        "Contoh: <i>cari Atomic Habits</i> 🔍"
-                ]);
-            }
-
-            $books = Buku::with('kategori')
-                ->where(function ($q) use ($keyword) {
-                    $q->where('judul', 'like', "%{$keyword}%")
-                        ->orWhere('pengarang', 'like', "%{$keyword}%")
-                        ->orWhere('isbn', 'like', "%{$keyword}%");
-                })
-                ->where('status', 'aktif')
-                ->limit(5)
-                ->get();
-
-            if ($books->isEmpty()) {
-                return response()->json([
-                    'reply' =>
-                    "Hmm, buku \"<b>{$keyword}</b>\" tidak ditemukan di katalog kami. 😔\n\n" .
-                        "Coba cari dengan kata kunci lain, atau lihat <a href='/katalog' class='chatbot-link'>Katalog Lengkap</a>."
-                ]);
-            }
-
-            $reply = "Ditemukan <b>{$books->count()} buku</b> untuk \"<b>{$keyword}</b>\":\n\n";
-            foreach ($books as $b) {
-                $stok  = $b->stok > 0 ? "✅ Tersedia ({$b->stok})" : "❌ Habis";
-                $reply .= "📖 <b>{$b->judul}</b>\n";
-                $reply .= "   ✍️ {$b->pengarang} | {$stok}\n\n";
-            }
-            $reply .= "<a href='/katalog?search=" . urlencode($keyword) . "' class='chatbot-link'>Lihat di Katalog →</a>";
-
-            return response()->json(['reply' => $reply]);
-        }
-
-        // ── Pinjaman Aktif ────────────────────────────────────────────────────
-        if ($this->matches($message, ['pinjaman saya', 'buku pinjam', 'sedang pinjam', 'dipinjam', 'pinjaman aktif', 'buku saya', 'pinjam saya'])) {
+        if ($user) {
+            // Pinjaman
             $loans = Peminjaman::with('buku')
                 ->where('user_id', $user->id)
                 ->whereIn('status', ['dipinjam', 'menunggu_konfirmasi'])
-                ->orderBy('tanggal_kembali')
                 ->get();
 
+            $context .= "--- STATUS PINJAMAN AKTIF PENGGUNA ---\n";
             if ($loans->isEmpty()) {
-                return response()->json([
-                    'reply' =>
-                    "Kamu belum punya peminjaman aktif saat ini. 📭\n\n" .
-                        "Yuk <a href='/katalog' class='chatbot-link'>cari buku</a> yang menarik!"
-                ]);
+                $context .= "Pengguna TIDAK memiliki peminjaman buku aktif saat ini.\n";
+            } else {
+                foreach ($loans as $loan) {
+                    $status = $loan->status == 'dipinjam' ? 'Sedang Dipinjam' : 'Menunggu Konfirmasi Pustakawan';
+                    $context .= "Judul: '{$loan->buku->judul}' | Status: {$status} | Tanggal Harus Kembali: {$loan->tanggal_kembali}\n";
+                }
             }
 
-            $reply = "Kamu punya <b>{$loans->count()} peminjaman</b> aktif:\n\n";
-            foreach ($loans as $p) {
-                $status = $p->status === 'menunggu_konfirmasi' ? '⏳ Menunggu Konfirmasi' : '📗 Dipinjam';
-                $due    = \Carbon\Carbon::parse($p->tanggal_kembali)->translatedFormat('d M Y');
-                $reply .= "{$status}\n";
-                $reply .= "📖 <b>{$p->buku->judul}</b>\n";
-                $reply .= "   📅 Kembali: {$due}\n\n";
-            }
-            $reply .= "<a href='/peminjaman' class='chatbot-link'>Lihat detail →</a>";
-
-            return response()->json(['reply' => $reply]);
-        }
-
-        // ── Info Denda ────────────────────────────────────────────────────────
-        if ($this->matches($message, ['denda', 'bayar denda', 'denda saya', 'keterlambatan', 'terlambat', 'biaya'])) {
+            // Denda
             $dendas = Denda::whereHas('peminjaman', fn($q) => $q->where('user_id', $user->id))
                 ->where('status_pembayaran', 'belum_lunas')
                 ->with('peminjaman.buku')
                 ->get();
-
+            
+            $context .= "\n--- STATUS DENDA BELUM LUNAS ---\n";
             if ($dendas->isEmpty()) {
-                return response()->json([
-                    'reply' =>
-                    "Yeay! 🎉 Kamu tidak punya denda yang belum dibayar.\n\n" .
-                        "Ingat ya, denda keterlambatan <b>Rp 1.000/hari</b>. Selalu kembalikan tepat waktu! ⏰"
-                ]);
-            }
-
-            $total = $dendas->sum('jumlah_denda');
-            $reply = "⚠️ Kamu punya <b>{$dendas->count()} denda</b> belum lunas:\n\n";
-            foreach ($dendas as $d) {
-                $judul  = $d->peminjaman->buku->judul ?? 'Buku';
-                $amount = number_format($d->jumlah_denda, 0, ',', '.');
-                $reply .= "📖 <b>{$judul}</b>\n";
-                $reply .= "   💰 Rp {$amount}\n\n";
-            }
-            $totalFmt = number_format($total, 0, ',', '.');
-            $reply   .= "Total: <b>Rp {$totalFmt}</b>\n";
-            $reply   .= "Hubungi pustakawan untuk pembayaran. 🏛️";
-
-            return response()->json(['reply' => $reply]);
-        }
-
-        // ── Cara Pinjam ───────────────────────────────────────────────────────
-        if ($this->matches($message, ['cara pinjam', 'gimana pinjam', 'bagaimana pinjam', 'prosedur', 'alur pinjam', 'langkah'])) {
-            return response()->json([
-                'reply' =>
-                "📚 <b>Cara Meminjam Buku di MacaBae:</b>\n\n" .
-                    "1️⃣ Buka <a href='/katalog' class='chatbot-link'>Katalog Buku</a>\n" .
-                    "2️⃣ Pilih buku yang ingin dipinjam\n" .
-                    "3️⃣ Klik <b>\"Pinjam Buku\"</b> & pilih durasi (1–7 hari)\n" .
-                    "4️⃣ Tunggu <b>konfirmasi pustakawan</b>\n" .
-                    "5️⃣ Setelah disetujui, ambil buku di perpustakaan 🏛️\n\n" .
-                    "Ada pertanyaan lain? 😊"
-            ]);
-        }
-
-        // ── Aturan / Peraturan ────────────────────────────────────────────────
-        if ($this->matches($message, ['aturan', 'peraturan', 'kebijakan', 'rules', 'syarat'])) {
-            return response()->json([
-                'reply' =>
-                "📜 <b>Peraturan Perpustakaan MacaBae:</b>\n\n" .
-                    "📅 Durasi pinjam: <b>1–7 hari</b> per buku\n" .
-                    "💸 Denda keterlambatan: <b>Rp 1.000/hari</b>\n" .
-                    "📦 Maks. pinjaman: <b>5 buku</b> sekaligus\n" .
-                    "🔄 Perpanjangan: hubungi pustakawan\n" .
-                    "🚫 Buku rusak/hilang: dikenakan ganti rugi\n\n" .
-                    "Patuhi aturan agar semua member nyaman! 🙏"
-            ]);
-        }
-
-        // ── Jam Buka ──────────────────────────────────────────────────────────
-        if ($this->matches($message, ['jam', 'buka', 'tutup', 'operasional', 'jam buka', 'open', 'waktu'])) {
-            return response()->json([
-                'reply' =>
-                "🕐 <b>Jam Operasional Perpustakaan:</b>\n\n" .
-                    "📅 Senin – Jumat: <b>08.00 – 16.00</b>\n" .
-                    "📅 Sabtu: <b>09.00 – 13.00</b>\n" .
-                    "🚫 Minggu & hari libur nasional: <b>Tutup</b>\n\n" .
-                    "Peminjaman digital bisa dilakukan 24 jam melalui MacaBae! 💻"
-            ]);
-        }
-
-        // ── Kontak ────────────────────────────────────────────────────────────
-        if ($this->matches($message, ['kontak', 'contact', 'hubungi', 'email', 'telepon', 'cs', 'customer service'])) {
-            return response()->json([
-                'reply' =>
-                "📞 <b>Hubungi Kami:</b>\n\n" .
-                    "📧 Email: <b>macabae@library.id</b>\n" .
-                    "📱 WhatsApp: <b>0812-3456-7890</b>\n" .
-                    "🏛️ Alamat: Perpustakaan MacaBae, Gedung A Lt.2\n\n" .
-                    "Atau langsung datang ke perpustakaan saat jam buka! 😊"
-            ]);
-        }
-
-        // ── Reservasi ─────────────────────────────────────────────────────────
-        if ($this->matches($message, ['reservasi', 'reserve', 'antri', 'antrian', 'booking'])) {
-            return response()->json([
-                'reply' =>
-                "🔖 <b>Fitur Reservasi Buku:</b>\n\n" .
-                    "Jika buku yang kamu inginkan sedang habis stok, kamu bisa menekan tombol <b>\"Reservasi\"</b> pada halaman detail buku.\n\n" .
-                    "Kamu akan otomatis mendapat notifikasi ketika buku tersedia! 🔔\n\n" .
-                    "<a href='/reservasi' class='chatbot-link'>Lihat Reservasi Saya →</a>"
-            ]);
-        }
-
-        // ── Riwayat ───────────────────────────────────────────────────────────
-        if ($this->matches($message, ['riwayat', 'history', 'histori', 'pinjaman lama', 'sudah dikembalikan'])) {
-            return response()->json([
-                'reply' =>
-                "📜 Lihat semua riwayat peminjaman kamu di:\n\n" .
-                    "<a href='/riwayat' class='chatbot-link'>Halaman Riwayat Pinjaman →</a>\n\n" .
-                    "Di sana kamu bisa melihat semua buku yang pernah dipinjam beserta statusnya. 📚"
-            ]);
-        }
-
-        // ── Terima kasih ──────────────────────────────────────────────────────
-        if ($this->matches($message, ['terima kasih', 'makasih', 'thanks', 'thank you', 'thx', 'mantap', 'oke', 'ok', 'siap'])) {
-            return response()->json([
-                'reply' =>
-                "Sama-sama! 😊 Senang bisa membantu.\n\n" .
-                    "Jika ada pertanyaan lain, jangan ragu untuk tanya ya! 🤖✨"
-            ]);
-        }
-
-        // ── Panduan ───────────────────────────────────────────────────────────
-        if ($this->matches($message, ['panduan', 'help', 'bantuan', 'tolong', 'bingung', 'apa yang bisa'])) {
-            return response()->json([
-                'reply' =>
-                "🤖 <b>Aku MacaBot, asisten MacaBae!</b>\n\n" .
-                    "Ini yang bisa aku bantu:\n\n" .
-                    "🔍 <b>cari [judul/pengarang]</b> — cari buku\n" .
-                    "📋 <b>pinjaman saya</b> — buku yang sedang dipinjam\n" .
-                    "💸 <b>denda saya</b> — info denda\n" .
-                    "📖 <b>cara pinjam</b> — panduan peminjaman\n" .
-                    "📜 <b>aturan</b> — peraturan perpustakaan\n" .
-                    "🕐 <b>jam buka</b> — jam operasional\n" .
-                    "🔖 <b>reservasi</b> — info reservasi buku\n" .
-                    "📞 <b>kontak</b> — hubungi perpustakaan"
-            ]);
-        }
-
-        // ── Default ───────────────────────────────────────────────────────────
-        return response()->json([
-            'reply' =>
-            "Hmm, aku belum mengerti maksudnya. 🤔\n\n" .
-                "Coba ketik:\n" .
-                "• <b>cari [judul buku]</b>\n" .
-                "• <b>pinjaman saya</b>\n" .
-                "• <b>denda saya</b>\n" .
-                "• <b>panduan</b> — lihat semua perintah\n\n" .
-                "atau <b>halo</b> untuk memulai! 😊"
-        ]);
-    }
-
-    /**
-     * Cek apakah pesan mengandung salah satu keyword.
-     */
-    private function matches(string $message, array $keywords): bool
-    {
-        foreach ($keywords as $kw) {
-            if (str_contains($message, $kw)) {
-                return true;
+                $context .= "Bagus! Pengguna tidak memiliki denda tunggakan keterlambatan (Rp 0).\n";
+            } else {
+                $total = 0;
+                foreach ($dendas as $d) {
+                    $context .= "Buku: '{$d->peminjaman->buku->judul}' | Jumlah Denda: Rp " . number_format($d->jumlah_denda, 0, ',', '.') . "\n";
+                    $total += $d->jumlah_denda;
+                }
+                $context .= "Total Denda Keseluruhan: Rp " . number_format($total, 0, ',', '.') . "\n";
             }
         }
-        return false;
+
+        // Katalog Buku
+        $context .= "\n--- KATALOG BUKU TERSEDIA DI MACABAE ---\n";
+        $books = Buku::where('status', 'aktif')->get();
+        foreach ($books as $buku) {
+            $statusStok = $buku->stok > 0 ? "Stok Tersedia ({$buku->stok} buah)" : "Stok Habis (0)";
+            $context .= "Judul: '{$buku->judul}' | Karya: {$buku->pengarang} | Status: {$statusStok}\n";
+        }
+
+        return $context;
     }
 }
