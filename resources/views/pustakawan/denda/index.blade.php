@@ -439,7 +439,7 @@
                  x-transition:leave-end="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95">
                 
                 {{-- Form action is generated dynamically via javascript form submission --}}
-                <form :action="'{{ route(auth()->user()->role . '.denda.bayar', '') }}/' + fineId" method="POST">
+                <form :action="'{{ route(auth()->user()->role . '.denda.bayar', ['id' => '__ID__']) }}'.replace('__ID__', fineId)" method="POST">
                     @csrf
                     
                     {{-- Header --}}
