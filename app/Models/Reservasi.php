@@ -16,6 +16,7 @@ class Reservasi extends Model
     protected $fillable = [
         'user_id',
         'buku_id',
+        'durasi',
         'status',
     ];
 
@@ -69,7 +70,7 @@ class Reservasi extends Model
                 'user_id' => $reservasi->user_id,
                 'buku_id' => $bukuId,
                 'tanggal_pinjam' => Carbon::now()->format('Y-m-d'),
-                'tanggal_kembali' => Carbon::now()->addDays(7)->format('Y-m-d'), // Default 7 hari
+                'tanggal_kembali' => Carbon::now()->addDays($reservasi->durasi ?? 7)->format('Y-m-d'),
                 'status' => 'menunggu_konfirmasi',
             ]);
 

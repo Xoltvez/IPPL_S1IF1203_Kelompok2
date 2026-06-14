@@ -77,9 +77,15 @@
                                 {{ $buku->pengarang }}
                             </td>
                             <td class="px-6 py-4 text-center">
-                                <span class="inline-block px-2.5 py-1 {{ $buku->stok > 0 ? 'text-emerald-500 bg-emerald-50/60' : 'bg-rose-50 text-rose-500 border border-rose-100' }} rounded-lg text-xs font-bold shadow-sm">
-                                    {{ number_format($buku->stok, 0, ',', '.') }} Pcs
-                                </span>
+                                @if(($buku->kategori && strtolower($buku->kategori->nama_kategori) === 'e-book') || (isset($kategori) && strtolower($kategori->nama_kategori) === 'e-book'))
+                                    <span class="inline-block px-2.5 py-1 text-emerald-600 bg-emerald-50 border border-emerald-100 rounded-lg text-xs font-bold shadow-sm whitespace-nowrap">
+                                        Sedia Selalu
+                                    </span>
+                                @else
+                                    <span class="inline-block px-2.5 py-1 {{ $buku->stok > 0 ? 'text-emerald-500 bg-emerald-50/60' : 'bg-rose-50 text-rose-500 border border-rose-100' }} rounded-lg text-xs font-bold shadow-sm">
+                                        {{ number_format($buku->stok, 0, ',', '.') }} Pcs
+                                    </span>
+                                @endif
                             </td>
                             <td class="px-6 py-4 text-center font-semibold text-xs">
                                 <div class="inline-flex items-center gap-1.5 bg-amber-50/50 px-2 py-1 rounded-md text-[#2F3951]">

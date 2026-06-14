@@ -7,7 +7,7 @@
 
     <!-- Breadcrumbs -->
     <div class="mb-6 flex items-center gap-2 text-xs font-semibold text-gray-400 dark:text-slate-500">
-        <a href="{{ route('dashboard') }}" class="hover:text-[#4D9BE2]">Beranda</a>
+        <a href="{{ route('dashboard') }}" class="hover:text-[#4D9BE2]">{{ __('Beranda') }}</a>
         <span>/</span>
         <span class="text-[#2F3951] dark:text-slate-300">{{ $buku->judul }}</span>
     </div>
@@ -30,14 +30,14 @@
                             <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20" fill="currentColor">
                                 <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
                             </svg>
-                            Tersimpan
+                            {{ __('Tersimpan') }}
                         </button>
                     @else
                         <button type="submit" class="w-full py-2.5 bg-[#F1F5F9] dark:bg-slate-800 hover:bg-[#E2E8F0] dark:hover:bg-slate-700 text-[#475569] dark:text-slate-300 rounded-xl font-bold text-xs flex items-center justify-center gap-2 transition-all transform active:scale-95">
                             <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                             </svg>
-                            Simpan buku
+                            {{ __('Simpan buku') }}
                         </button>
                     @endif
                 </form>
@@ -56,29 +56,29 @@
             <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
                 <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-[#4D9BE2] rounded-full"></span>
-                    Deskripsi
+                    {{ __('Deskripsi') }}
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-slate-400 leading-relaxed whitespace-pre-line">
-                    {{ $buku->deskripsi ?? 'Belum ada deskripsi lengkap untuk buku ini.' }}
+                    {{ $buku->deskripsi ?? __('Belum ada deskripsi lengkap untuk buku ini.') }}
                 </p>
             </div>
-
+ 
             <!-- Synopsis Card -->
             <div class="bg-white dark:bg-slate-900 p-6 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
                 <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-[#4D9BE2] rounded-full"></span>
-                    Sinopsis
+                    {{ __('Sinopsis') }}
                 </h3>
                 <p class="text-sm text-gray-500 dark:text-slate-400 leading-relaxed whitespace-pre-line">
-                    {{ $buku->sinopsis ?? 'Belum ada sinopsis atau ringkasan cerita untuk buku ini.' }}
+                    {{ $buku->sinopsis ?? __('Belum ada sinopsis atau ringkasan cerita untuk buku ini.') }}
                 </p>
             </div>
 
             <!-- Ulasan Buku Card -->
             <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors duration-200" x-data="{ showReviewModal: false, showAllReviewsModal: false, selectedRating: 5 }">
                 <div class="flex items-center justify-between mb-4">
-                    <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider">Ulasan buku</h3>
-                    <span class="text-[9px] font-semibold text-gray-400 dark:text-slate-500">{{ $totalReviews }} ulasan</span>
+                    <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider">{{ __('Ulasan buku') }}</h3>
+                    <span class="text-[9px] font-semibold text-gray-400 dark:text-slate-500">{{ $totalReviews }} {{ __('ulasan') }}</span>
                 </div>
                 
                 <div class="flex items-center gap-2 mb-4">
@@ -120,10 +120,10 @@
                 
                 <div class="mt-4 flex flex-col gap-2">
                     <button @click="showReviewModal = true" class="w-full py-2.5 bg-[#4D9BE2]/10 hover:bg-[#4D9BE2]/20 dark:bg-[#4D9BE2]/20 dark:hover:bg-[#4D9BE2]/30 text-[#4D9BE2] dark:text-[#5fa8eb] rounded-xl font-bold text-xs transition cursor-pointer">
-                        Beri ulasan
+                        {{ __('Beri ulasan') }}
                     </button>
                     <button @click="showAllReviewsModal = true" class="w-full py-2 text-gray-400 dark:text-slate-500 hover:text-gray-500 rounded-xl font-bold text-xs transition cursor-pointer">
-                        Lihat semua ulasan
+                        {{ __('Lihat semua ulasan') }}
                     </button>
                 </div>
 
@@ -148,8 +148,8 @@
                          x-transition:leave-start="opacity-100 transform translate-y-0 scale-100"
                          x-transition:leave-end="opacity-0 transform translate-y-4 scale-95">
                          
-                        <h3 class="text-sm font-bold text-[#2F3951] dark:text-slate-100 uppercase tracking-wider mb-2">Beri Ulasan Buku</h3>
-                        <p class="text-xs text-gray-400 dark:text-slate-500 mb-5">Bagikan pengalaman Anda setelah membaca buku <strong>{{ $buku->judul }}</strong>.</p>
+                        <h3 class="text-sm font-bold text-[#2F3951] dark:text-slate-100 uppercase tracking-wider mb-2">{{ __('Beri Ulasan Buku') }}</h3>
+                        <p class="text-xs text-gray-400 dark:text-slate-500 mb-5">{{ __('Bagikan pengalaman Anda setelah membaca buku') }} <strong>{{ $buku->judul }}</strong>.</p>
                         
                         <form action="{{ route('buku.ulasan.store', $buku->id) }}" method="POST" class="space-y-4 m-0">
                             @csrf
@@ -157,7 +157,7 @@
                             
                             <!-- Rating Stars Selector -->
                             <div class="flex flex-col gap-1.5">
-                                <label class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Penilaian Anda</label>
+                                <label class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">{{ __('Penilaian Anda') }}</label>
                                 <div class="flex items-center gap-1">
                                     <template x-for="star in 5">
                                         <button type="button" @click="selectedRating = star" class="text-gray-300 dark:text-slate-700 hover:scale-110 transition-transform duration-150 focus:outline-none cursor-pointer">
@@ -171,17 +171,17 @@
                             
                             <!-- Comment Textarea -->
                             <div class="flex flex-col gap-1.5 text-left">
-                                <label for="komentar" class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Komentar / Ulasan</label>
-                                <textarea name="komentar" id="komentar" rows="4" required placeholder="Tuliskan ulasan jujur Anda tentang isi buku ini..." class="w-full px-3.5 py-2.5 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] rounded-xl text-xs text-[#2F3951] dark:text-slate-100 placeholder-gray-400 focus:outline-none transition-all"></textarea>
+                                <label for="komentar" class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">{{ __('Komentar / Ulasan') }}</label>
+                                <textarea name="komentar" id="komentar" rows="4" required placeholder="{{ __('Tuliskan ulasan jujur Anda tentang isi buku ini...') }}" class="w-full px-3.5 py-2.5 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] rounded-xl text-xs text-[#2F3951] dark:text-slate-100 placeholder-gray-400 focus:outline-none transition-all"></textarea>
                             </div>
                             
                             <!-- Modal Footer Buttons -->
                             <div class="flex items-center justify-end gap-3 pt-2">
                                 <button type="button" @click="showReviewModal = false" class="px-4 py-2 text-gray-400 hover:text-gray-600 dark:hover:text-slate-300 text-xs font-bold rounded-xl transition">
-                                    Batal
+                                    {{ __('Batal') }}
                                 </button>
                                 <button type="submit" class="px-5 py-2.5 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white text-xs font-bold rounded-xl shadow-sm transition">
-                                    Kirim Ulasan
+                                    {{ __('Kirim Ulasan') }}
                                 </button>
                             </div>
                         </form>
@@ -211,8 +211,8 @@
                          x-transition:leave-end="opacity-0 transform translate-y-4 scale-95">
                          
                         <div class="flex items-center justify-between mb-4 border-b border-gray-100 dark:border-slate-800 pb-3">
-                            <h3 class="text-sm font-bold text-[#2F3951] dark:text-slate-100 uppercase tracking-wider">Semua Ulasan</h3>
-                            <span class="text-xs font-semibold text-gray-400 dark:text-slate-500">{{ $totalReviews }} ulasan</span>
+                            <h3 class="text-sm font-bold text-[#2F3951] dark:text-slate-100 uppercase tracking-wider">{{ __('Semua Ulasan') }}</h3>
+                            <span class="text-xs font-semibold text-gray-400 dark:text-slate-500">{{ $totalReviews }} {{ __('ulasan') }}</span>
                         </div>
                         
                         <!-- List of all reviews -->
@@ -246,7 +246,7 @@
                         <!-- Modal Footer Close -->
                         <div class="flex items-center justify-end pt-4 border-t border-gray-100 dark:border-slate-800 mt-4">
                             <button type="button" @click="showAllReviewsModal = false" class="px-5 py-2.5 bg-[#F1F5F9] dark:bg-slate-800 hover:bg-[#E2E8F0] dark:hover:bg-slate-700 text-[#475569] dark:text-slate-300 text-xs font-bold rounded-xl transition cursor-pointer">
-                                Tutup
+                                {{ __('Tutup') }}
                             </button>
                         </div>
                         
@@ -260,8 +260,12 @@
             <!-- Status Card -->
             <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
                 <div class="flex items-center justify-between mb-4">
-                    <span class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">Status buku</span>
-                    <span class="text-xs font-semibold text-gray-500 dark:text-slate-400">{{ $buku->stok }}/{{ $buku->stok + 2 }} buku</span>
+                    <span class="text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider">{{ __('Status buku') }}</span>
+                    @if($buku->kategori && strtolower($buku->kategori->nama_kategori) === 'e-book')
+                        <span class="text-xs font-semibold text-emerald-500 dark:text-emerald-400">{{ __('Sedia Selalu') }}</span>
+                    @else
+                        <span class="text-xs font-semibold text-gray-500 dark:text-slate-400">{{ $buku->stok }}/{{ $buku->stok + 2 }} {{ __('buku') }}</span>
+                    @endif
                 </div>
                 
                 @php
@@ -271,50 +275,62 @@
                 @if($buku->kategori && strtolower($buku->kategori->nama_kategori) === 'e-book')
                     <div class="w-full py-2 bg-[#4D9BE2]/10 text-[#4D9BE2] rounded-xl font-bold text-xs text-center flex items-center justify-center gap-1.5 border border-[#4D9BE2]/20 mb-4">
                         <span class="w-1.5 h-1.5 rounded-full bg-[#4D9BE2] animate-pulse"></span>
-                        E-Book Digital
+                        {{ __('E-Book Digital') }}
                     </div>
                     <a href="{{ route('buku.read', $buku->id) }}" class="block w-full py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white text-center font-bold rounded-xl text-sm shadow transition-all transform active:scale-95">
-                        Baca E-Book
+                        {{ __('Baca E-Book') }}
                     </a>
                 @elseif($availableStockForNewLoans > 0 && $buku->status == 'aktif')
                     <div class="w-full py-2 bg-emerald-50 dark:bg-emerald-950/30 text-emerald-600 dark:text-emerald-400 rounded-xl font-bold text-xs text-center flex items-center justify-center gap-1.5 border border-emerald-100 dark:border-emerald-900/50 mb-4">
                         <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                        Tersedia
+                        {{ __('Tersedia') }}
                     </div>
                     
                     <form action="{{ route('buku.pinjam', $buku->id) }}" method="POST" class="m-0 space-y-3.5">
                         @csrf
                         <div class="text-left">
-                            <label for="durasi" class="block text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">Durasi Peminjaman</label>
+                            <label for="durasi" class="block text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">{{ __('Durasi Peminjaman') }}</label>
                             <select name="durasi" id="durasi" class="w-full px-3.5 py-2.5 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] rounded-xl text-xs font-bold text-[#2F3951] dark:text-slate-100 transition-all outline-none cursor-pointer">
-                                <option value="1">1 Hari</option>
-                                <option value="2">2 Hari</option>
-                                <option value="3">3 Hari</option>
-                                <option value="4">4 Hari</option>
-                                <option value="5">5 Hari</option>
-                                <option value="6">6 Hari</option>
-                                <option value="7" selected>7 Hari (Maksimal)</option>
+                                <option value="1">1 {{ __('Hari') }}</option>
+                                <option value="2">2 {{ __('Hari') }}</option>
+                                <option value="3">3 {{ __('Hari') }}</option>
+                                <option value="4">4 {{ __('Hari') }}</option>
+                                <option value="5">5 {{ __('Hari') }}</option>
+                                <option value="6">6 {{ __('Hari') }}</option>
+                                <option value="7" selected>7 {{ __('Hari (Maksimal)') }}</option>
                             </select>
                         </div>
                         <button type="submit" class="w-full py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl font-bold text-sm shadow transition-all transform active:scale-95">
-                            Pinjam buku
+                            {{ __('Pinjam buku') }}
                         </button>
                     </form>
                 @else
                     <div class="w-full py-2 bg-rose-50 dark:bg-rose-950/30 text-rose-600 dark:text-rose-400 rounded-xl font-bold text-xs text-center flex items-center justify-center gap-1.5 border border-rose-100 dark:border-rose-900/50 mb-4">
                         <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
-                        Terpinjam
+                        {{ __('Terpinjam') }}
                     </div>
-
+ 
                     @if($isReserved)
                         <button disabled class="w-full py-3 bg-gray-100 dark:bg-slate-800 text-gray-400 dark:text-slate-500 rounded-xl font-bold text-sm cursor-not-allowed border border-gray-200 dark:border-slate-700">
-                            Sudah Direservasi
+                            {{ __('Sudah Direservasi') }}
                         </button>
                     @else
-                        <form action="{{ route('buku.reservasi', $buku->id) }}" method="POST" class="m-0">
+                        <form action="{{ route('buku.reservasi', $buku->id) }}" method="POST" class="m-0 space-y-3.5">
                             @csrf
+                            <div class="text-left">
+                                <label for="durasi_reservasi" class="block text-[10px] font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-1.5">{{ __('Durasi Peminjaman') }}</label>
+                                <select name="durasi" id="durasi_reservasi" required class="w-full px-3.5 py-2.5 bg-[#F8FAFC] dark:bg-slate-800 border border-gray-200 dark:border-slate-700 focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2] rounded-xl text-xs font-bold text-[#2F3951] dark:text-slate-100 transition-all outline-none cursor-pointer">
+                                    <option value="1">1 {{ __('Hari') }}</option>
+                                    <option value="2">2 {{ __('Hari') }}</option>
+                                    <option value="3">3 {{ __('Hari') }}</option>
+                                    <option value="4">4 {{ __('Hari') }}</option>
+                                    <option value="5">5 {{ __('Hari') }}</option>
+                                    <option value="6">6 {{ __('Hari') }}</option>
+                                    <option value="7" selected>7 {{ __('Hari (Maksimal)') }}</option>
+                                </select>
+                            </div>
                             <button type="submit" class="w-full py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl font-bold text-sm shadow transition-all transform active:scale-95">
-                                Reservasi Buku
+                                {{ __('Reservasi Buku') }}
                             </button>
                         </form>
                     @endif
@@ -323,61 +339,61 @@
 
             <!-- Detail Spesifikasi Card -->
             <div class="bg-white dark:bg-slate-900 p-5 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm transition-colors duration-200">
-                <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider mb-4">Detail buku</h3>
+                <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider mb-4">{{ __('Detail buku') }}</h3>
                 <div class="grid grid-cols-2 gap-y-4 gap-x-2 text-xs">
                     <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Penerbit</p>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">{{ __('Penerbit') }}</p>
                         <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->penerbit ?? '-' }}</p>
                     </div>
                     <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Tanggal Terbit</p>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">{{ __('Tanggal Terbit') }}</p>
                         <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">
-                            {{ $buku->tanggal_terbit ? \Carbon\Carbon::parse($buku->tanggal_terbit)->format('d M Y') : $buku->tahun_terbit }}
+                            {{ $buku->tanggal_terbit ? \Carbon\Carbon::parse($buku->tanggal_terbit)->translatedFormat('d M Y') : $buku->tahun_terbit }}
                         </p>
                     </div>
                     
                     <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
                     
                     <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">ISBN</p>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">{{ __('ISBN') }}</p>
                         <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->isbn }}</p>
                     </div>
                     <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Halaman</p>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">{{ __('Halaman') }}</p>
                         <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->halaman ?? '-' }}</p>
                     </div>
                     
                     <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
                     
                     <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Bahasa</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->bahasa ?? 'Indonesia' }}</p>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">{{ __('Bahasa') }}</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ __($buku->bahasa ?? 'Indonesia') }}</p>
                     </div>
                     <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Panjang</p>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">{{ __('Panjang') }}</p>
                         <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->panjang ?? '-' }}</p>
                     </div>
                     
                     <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
                     
                     <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Lebar</p>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">{{ __('Lebar') }}</p>
                         <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->lebar ?? '-' }}</p>
                     </div>
                     <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Berat</p>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">{{ __('Berat') }}</p>
                         <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->berat ?? '-' }}</p>
                     </div>
                     
                     <div class="col-span-2 border-t border-gray-50 dark:border-slate-800 my-1"></div>
                     
                     <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Penulis</p>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">{{ __('Penulis') }}</p>
                         <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->pengarang }}</p>
                     </div>
                     <div>
-                        <p class="text-gray-400 dark:text-slate-500 font-medium">Jenis</p>
-                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ $buku->jenis ?? 'Buku Fisik' }}</p>
+                        <p class="text-gray-400 dark:text-slate-500 font-medium">{{ __('Jenis') }}</p>
+                        <p class="font-bold text-[#2F3951] dark:text-slate-300 mt-0.5">{{ __($buku->jenis ?? 'Buku Fisik') }}</p>
                     </div>
                 </div>
             </div>

@@ -140,7 +140,11 @@
                         </td>
                         
                         <td class="py-4 px-6 text-center">
-                            @if($buku->stok > 0)
+                            @if($buku->kategori && strtolower($buku->kategori->nama_kategori) === 'e-book')
+                                <span class="inline-flex items-center justify-center text-xs font-bold text-emerald-600 bg-emerald-50 border border-emerald-100 px-2.5 py-1 rounded-md whitespace-nowrap">
+                                    Sedia Selalu
+                                </span>
+                            @elseif($buku->stok > 0)
                                 <span class="inline-flex items-center justify-center text-xs font-bold text-emerald-500 bg-emerald-50/60 px-2.5 py-1 rounded-md min-w-[55px] whitespace-nowrap">
                                     {{ $buku->stok }} <span class="font-normal text-[10px] text-emerald-400 ml-0.5">Pcs</span>
                                 </span>

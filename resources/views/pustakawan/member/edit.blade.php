@@ -41,6 +41,25 @@
                     @enderror
                 </div>
 
+                {{-- Field Status Akun --}}
+                <div>
+                    <label class="block text-xs font-bold text-gray-400 uppercase tracking-widest mb-2">Status Akun</label>
+                    <div class="relative w-full">
+                        <select name="status" required class="w-full px-4 py-3 bg-[#F8FAFC]/60 border border-gray-200 focus:border-[#4D9BE2]/50 focus:bg-white rounded-xl text-sm text-[#2F3951] focus:outline-none focus:ring-4 focus:ring-[#4D9BE2]/5 transition-all appearance-none cursor-pointer">
+                            <option value="aktif" {{ old('status', $member->status ?? 'aktif') == 'aktif' ? 'selected' : '' }}>Aktif</option>
+                            <option value="non aktif" {{ old('status', $member->status ?? 'aktif') == 'non aktif' ? 'selected' : '' }}>Tidak Aktif</option>
+                        </select>
+                        <div class="absolute inset-y-0 right-0 flex items-center pr-4 pointer-events-none text-gray-400">
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-3.5 h-3.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                            </svg>
+                        </div>
+                    </div>
+                    @error('status')
+                        <p class="text-xs text-rose-500 mt-2">{{ $message }}</p>
+                    @enderror
+                </div>
+
                 {{-- Status Info (Read Only) --}}
                 <div class="p-4 bg-blue-50 rounded-xl border border-blue-100">
                     <div class="flex gap-3">

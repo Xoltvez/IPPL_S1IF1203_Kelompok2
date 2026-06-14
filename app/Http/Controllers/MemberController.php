@@ -43,12 +43,13 @@ class MemberController extends Controller
         $request->validate([
             'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users,email,' . $id,
-            // Tambahkan validasi lain jika ada (misal: NIM, nomor telepon)
+            'status' => 'required|in:aktif,non aktif',
         ]);
 
         $member->update([
             'name' => $request->name,
             'email' => $request->email,
+            'status' => $request->status,
         ]);
 
         return redirect()->route(auth()->user()->role . '.member.index')

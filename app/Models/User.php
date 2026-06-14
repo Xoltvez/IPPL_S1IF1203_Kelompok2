@@ -22,6 +22,8 @@ class User extends Authenticatable
         'name',
         'email',
         'password',
+        'role',
+        'status',
         'foto',
         'no_telp',
         'notif_persetujuan',

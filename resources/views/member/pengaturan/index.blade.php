@@ -1,6 +1,6 @@
 @extends('layouts.app')
 
-@section('title', 'Pengaturan')
+@section('title', __('Pengaturan'))
 
 @section('content')
 <div class="w-full flex flex-col Box-border" 
@@ -14,44 +14,44 @@
 
     <!-- Header Section -->
     <div class="mb-8">
-        <h1 class="text-2xl font-bold text-[#2F3951] dark:text-slate-100 tracking-tight">Pengaturan</h1>
-        <p class="text-gray-500 dark:text-slate-400 text-sm mt-1 font-medium">Ubah informasi akun dan preferensi aplikasi Anda di sini.</p>
+        <h1 class="text-2xl font-bold text-[#2F3951] dark:text-slate-100 tracking-tight">{{ __('Pengaturan') }}</h1>
+        <p class="text-gray-500 dark:text-slate-400 text-sm mt-1 font-medium">{{ __('Ubah informasi akun dan preferensi aplikasi Anda di sini.') }}</p>
     </div>
 
     <!-- Main Container -->
     <div class="grid grid-cols-1 lg:grid-cols-4 gap-8 items-start">
         
         <!-- Left Sub-menu / Navigation (Tabs) -->
-        <div class="lg:col-span-1 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 p-6 shadow-sm space-y-1.5 h-fit">
+        <div class="lg:col-span-1 bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700/50 p-6 shadow-sm space-y-1.5 h-fit">
             <button @click="activeTab = 'profil'" 
                     :class="activeTab === 'profil' ? 'bg-[#4D9BE2] text-white shadow-sm' : 'text-gray-500 dark:text-slate-400 hover:bg-[#F3F7FB] dark:hover:bg-slate-800 hover:text-[#4D9BE2] dark:hover:text-[#4D9BE2]'" 
                     class="w-full text-left px-5 py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 cursor-pointer">
-                Profil
+                {{ __('Profil') }}
             </button>
             <button @click="activeTab = 'notifikasi'" 
                     :class="activeTab === 'notifikasi' ? 'bg-[#4D9BE2] text-white shadow-sm' : 'text-gray-500 dark:text-slate-400 hover:bg-[#F3F7FB] dark:hover:bg-slate-800 hover:text-[#4D9BE2] dark:hover:text-[#4D9BE2]'" 
                     class="w-full text-left px-5 py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 cursor-pointer">
-                Notifikasi
+                {{ __('Notifikasi') }}
             </button>
             <button @click="activeTab = 'tampilan'" 
                     :class="activeTab === 'tampilan' ? 'bg-[#4D9BE2] text-white shadow-sm' : 'text-gray-500 dark:text-slate-400 hover:bg-[#F3F7FB] dark:hover:bg-slate-800 hover:text-[#4D9BE2] dark:hover:text-[#4D9BE2]'" 
                     class="w-full text-left px-5 py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 cursor-pointer">
-                Tampilan
+                {{ __('Tampilan') }}
             </button>
             <button @click="activeTab = 'bantuan'" 
                     :class="activeTab === 'bantuan' ? 'bg-[#4D9BE2] text-white shadow-sm' : 'text-gray-500 dark:text-slate-400 hover:bg-[#F3F7FB] dark:hover:bg-slate-800 hover:text-[#4D9BE2] dark:hover:text-[#4D9BE2]'" 
                     class="w-full text-left px-5 py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 cursor-pointer">
-                Bantuan
+                {{ __('Bantuan') }}
             </button>
             <button @click="activeTab = 'tentang'" 
                     :class="activeTab === 'tentang' ? 'bg-[#4D9BE2] text-white shadow-sm' : 'text-gray-500 dark:text-slate-400 hover:bg-[#F3F7FB] dark:hover:bg-slate-800 hover:text-[#4D9BE2] dark:hover:text-[#4D9BE2]'" 
                     class="w-full text-left px-5 py-3.5 rounded-2xl font-bold text-sm transition-all duration-200 cursor-pointer">
-                Tentang
+                {{ __('Tentang') }}
             </button>
         </div>
 
         <!-- Right Content Section -->
-        <div class="lg:col-span-3 bg-white dark:bg-slate-900 rounded-3xl border border-gray-100 dark:border-slate-800 p-8 shadow-sm min-h-[500px]">
+        <div class="lg:col-span-3 bg-white dark:bg-slate-800 rounded-3xl border border-gray-100 dark:border-slate-700/50 p-8 shadow-sm min-h-[500px]">
             
             {{-- TAB: PROFIL --}}
             <div x-show="activeTab === 'profil'" 
@@ -59,7 +59,7 @@
                  x-transition:enter-start="opacity-0 translate-y-3"
                  x-transition:enter-end="opacity-100 translate-y-0">
                 
-                <h2 class="text-xl font-bold text-[#2F3951] dark:text-slate-100 mb-6">Profil saya</h2>
+                <h2 class="text-xl font-bold text-[#2F3951] dark:text-slate-100 mb-6">{{ __('Profil saya') }}</h2>
                 
                 <div class="grid grid-cols-1 xl:grid-cols-12 gap-8 items-start">
                     
@@ -85,7 +85,7 @@
                                             <svg xmlns="http://www.w3.org/2000/svg" class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z" />
                                             </svg>
-                                            Rubah foto
+                                            {{ __('Rubah foto') }}
                                         </button>
                                     </form>
 
@@ -93,12 +93,12 @@
                                         <form action="{{ route('member.pengaturan.deleteFoto') }}" method="POST" class="m-0">
                                             @csrf
                                             <button type="submit" class="px-4 py-2 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-slate-300 rounded-xl text-xs font-bold transition cursor-pointer transform active:scale-95">
-                                                Hapus foto
+                                                {{ __('Hapus foto') }}
                                             </button>
                                         </form>
                                     @endif
                                 </div>
-                                <p class="text-xs text-gray-400 dark:text-slate-500">JPG, PNG, JPEG dengan ukuran maksimum 2 MB</p>
+                                <p class="text-xs text-gray-400 dark:text-slate-500">{{ __('JPG, PNG, JPEG dengan ukuran maksimum 2 MB') }}</p>
                             </div>
                         </div>
 
@@ -107,44 +107,44 @@
                             <!-- Nama Lengkap -->
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                 <div class="flex-1 min-w-0">
-                                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Nama lengkap</label>
+                                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ __('Nama lengkap') }}</label>
                                     <input type="text" value="{{ $user->name }}" class="w-full bg-[#F8FAFC] dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl px-5 py-3.5 text-sm text-gray-500 dark:text-slate-300 font-semibold focus:outline-none" disabled>
                                 </div>
                                 <button @click="showEditNameModal = true" class="md:mt-6 px-5 py-3.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-slate-300 font-bold rounded-2xl text-xs whitespace-nowrap transition cursor-pointer transform active:scale-95">
-                                    Ganti nama
+                                    {{ __('Ganti nama') }}
                                 </button>
                             </div>
 
                             <!-- Email -->
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                 <div class="flex-1 min-w-0">
-                                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Email</label>
+                                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ __('Email') }}</label>
                                     <input type="email" value="{{ $user->email }}" class="w-full bg-[#F8FAFC] dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl px-5 py-3.5 text-sm text-gray-500 dark:text-slate-300 font-semibold focus:outline-none" disabled>
                                 </div>
                                 <button @click="showEditEmailModal = true" class="md:mt-6 px-5 py-3.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-slate-300 font-bold rounded-2xl text-xs whitespace-nowrap transition cursor-pointer transform active:scale-95">
-                                    Ganti email
+                                    {{ __('Ganti email') }}
                                 </button>
                             </div>
 
                             <!-- Password -->
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                 <div class="flex-1 min-w-0">
-                                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Password</label>
+                                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ __('Password') }}</label>
                                     <input type="text" value="••••••••••••" class="w-full bg-[#F8FAFC] dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl px-5 py-3.5 text-sm text-gray-500 dark:text-slate-300 font-semibold tracking-widest focus:outline-none" disabled>
                                 </div>
                                 <button @click="showEditPasswordModal = true" class="md:mt-6 px-5 py-3.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-slate-300 font-bold rounded-2xl text-xs whitespace-nowrap transition cursor-pointer transform active:scale-95">
-                                    Ganti password
+                                    {{ __('Ganti password') }}
                                 </button>
                             </div>
 
                             <!-- Nomor Telephone -->
                             <div class="flex flex-col md:flex-row md:items-center justify-between gap-4">
                                 <div class="flex-1 min-w-0">
-                                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Nomor telephone</label>
-                                    <input type="text" value="{{ $user->no_telp ?? 'Belum diatur' }}" class="w-full bg-[#F8FAFC] dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl px-5 py-3.5 text-sm text-gray-500 dark:text-slate-300 font-semibold focus:outline-none" disabled>
+                                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ __('Nomor telephone') }}</label>
+                                    <input type="text" value="{{ $user->no_telp ?? __('Belum diatur') }}" class="w-full bg-[#F8FAFC] dark:bg-slate-800 border border-gray-100 dark:border-slate-700 rounded-2xl px-5 py-3.5 text-sm text-gray-500 dark:text-slate-300 font-semibold focus:outline-none" disabled>
                                 </div>
                                 <button @click="showEditPhoneModal = true" class="md:mt-6 px-5 py-3.5 bg-gray-100 dark:bg-slate-800 hover:bg-gray-200 dark:hover:bg-slate-700 text-gray-600 dark:text-slate-300 font-bold rounded-2xl text-xs whitespace-nowrap transition cursor-pointer transform active:scale-95">
-                                    Ganti nomor
+                                    {{ __('Ganti nomor') }}
                                 </button>
                             </div>
                         </div>
@@ -152,7 +152,7 @@
 
                     <!-- Right: Digital Member Card -->
                     <div class="xl:col-span-5 flex flex-col items-center gap-4 bg-[#F8FAFC] dark:bg-slate-800/30 p-6 rounded-3xl border border-gray-100 dark:border-slate-800 w-full">
-                        <h3 class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider w-full text-left">Kartu Anggota Digital</h3>
+                        <h3 class="text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider w-full text-left">{{ __('Kartu Anggota Digital') }}</h3>
                         
                         <!-- Physical Card Representation -->
                         <div id="digital-member-card" class="relative w-full max-w-[340px] h-[215px] bg-gradient-to-br from-[#4D9BE2] via-[#2F80ED] to-[#1E40AF] rounded-3xl p-5 text-white shadow-xl border border-white/10 overflow-hidden flex flex-col justify-between select-none">
@@ -169,7 +169,7 @@
                                     </svg>
                                     <span class="font-black text-sm tracking-tight">MacaBae</span>
                                 </div>
-                                <span class="text-[9px] font-bold tracking-widest text-white/70 uppercase">Member Card</span>
+                                <span class="text-[9px] font-bold tracking-widest text-white/70 uppercase">{{ __('Member Card') }}</span>
                             </div>
 
                             <!-- Card Body: Member Info & QR Code -->
@@ -181,7 +181,7 @@
                                     
                                     <div class="pt-2">
                                         <span class="inline-block px-2 py-0.5 bg-white/15 backdrop-blur-md rounded-lg text-[8px] font-extrabold uppercase tracking-wider text-blue-100">
-                                            Anggota Aktif
+                                            {{ __('Anggota Aktif') }}
                                         </span>
                                     </div>
                                 </div>
@@ -194,7 +194,7 @@
 
                             <!-- Card Footer -->
                             <div class="flex items-center justify-between text-white/60 text-[8px] font-bold z-10">
-                                <span class="tracking-wide">Perpustakaan Digital MacaBae</span>
+                                <span class="tracking-wide">{{ __('Perpustakaan Digital MacaBae') }}</span>
                                 <!-- Gold Contact Chip Simulator -->
                                 <div class="w-7 h-5 bg-amber-400/80 rounded border border-amber-300/40 relative overflow-hidden">
                                     <div class="absolute inset-0 grid grid-cols-3 gap-0.5 p-0.5 opacity-60">
@@ -214,11 +214,11 @@
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                             </svg>
-                            Unduh Kartu Anggota
+                            {{ __('Unduh Kartu Anggota') }}
                         </button>
 
                         <p class="text-[10px] text-gray-400 dark:text-slate-500 font-semibold text-center mt-2">
-                            Tunjukkan QR Code ini kepada pustakawan saat berkunjung offline untuk presensi dan transaksi cepat.
+                            {{ __('Tunjukkan QR Code ini kepada pustakawan saat berkunjung offline untuk presensi dan transaksi cepat.') }}
                         </p>
                     </div>
 
@@ -232,8 +232,8 @@
                  x-transition:enter-end="opacity-100 translate-y-0"
                  style="display: none;">
                 
-                <h2 class="text-xl font-bold text-[#2F3951] dark:text-slate-100 mb-6">Preferensi Notifikasi</h2>
-                <p class="text-gray-400 dark:text-slate-400 text-xs mb-8">Pilih kapan saja Anda ingin menerima pemberitahuan dari kami terkait aktivitas perpustakaan.</p>
+                <h2 class="text-xl font-bold text-[#2F3951] dark:text-slate-100 mb-6">{{ __('Preferensi Notifikasi') }}</h2>
+                <p class="text-gray-400 dark:text-slate-400 text-xs mb-8">{{ __('Pilih kapan saja Anda ingin menerima pemberitahuan dari kami terkait aktivitas perpustakaan.') }}</p>
 
                 <form action="{{ route('member.pengaturan.updateNotifikasi') }}" method="POST" class="m-0">
                     @csrf
@@ -241,8 +241,8 @@
                         <!-- Notif 1 -->
                         <div class="flex items-start justify-between gap-6 pb-6 border-b border-gray-50 dark:border-slate-800/50">
                             <div class="space-y-1 flex-1">
-                                <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">Email Persetujuan Sirkulasi</h4>
-                                <p class="text-xs text-gray-400 dark:text-slate-400">Kirim email otomatis saat pengajuan peminjaman Anda disetujui atau ditolak.</p>
+                                <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">{{ __('Email Persetujuan Sirkulasi') }}</h4>
+                                <p class="text-xs text-gray-400 dark:text-slate-400">{{ __('Kirim email otomatis saat pengajuan peminjaman Anda disetujui atau ditolak.') }}</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                 <input type="checkbox" name="notif_persetujuan" value="1" {{ $user->notif_persetujuan ? 'checked' : '' }} class="sr-only peer">
@@ -253,8 +253,8 @@
                         <!-- Notif 2 -->
                         <div class="flex items-start justify-between gap-6 pb-6 border-b border-gray-50 dark:border-slate-800/50">
                             <div class="space-y-1 flex-1">
-                                <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">Email Pengembalian</h4>
-                                <p class="text-xs text-gray-400 dark:text-slate-400">Kirim email sebagai tanda terima resmi setelah buku sukses dikembalikan.</p>
+                                <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">{{ __('Email Pengembalian') }}</h4>
+                                <p class="text-xs text-gray-400 dark:text-slate-400">{{ __('Kirim email sebagai tanda terima resmi setelah buku sukses dikembalikan.') }}</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                 <input type="checkbox" name="notif_pengembalian" value="1" {{ $user->notif_pengembalian ? 'checked' : '' }} class="sr-only peer">
@@ -265,8 +265,8 @@
                         <!-- Notif 3 -->
                         <div class="flex items-start justify-between gap-6 pb-6 border-b border-gray-50 dark:border-slate-800/50">
                             <div class="space-y-1 flex-1">
-                                <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">Pemberitahuan Jatuh Tempo & Denda</h4>
-                                <p class="text-xs text-gray-400 dark:text-slate-400">Dapatkan peringatan penting 1 hari sebelum batas waktu pengembalian buku berakhir.</p>
+                                <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">{{ __('Pemberitahuan Jatuh Tempo & Denda') }}</h4>
+                                <p class="text-xs text-gray-400 dark:text-slate-400">{{ __('Dapatkan peringatan penting 1 hari sebelum batas waktu pengembalian buku berakhir.') }}</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                 <input type="checkbox" name="notif_jatuh_tempo" value="1" {{ $user->notif_jatuh_tempo ? 'checked' : '' }} class="sr-only peer">
@@ -277,8 +277,8 @@
                         <!-- Notif 4 -->
                         <div class="flex items-start justify-between gap-6">
                             <div class="space-y-1 flex-1">
-                                <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">Rekomendasi Buku Baru</h4>
-                                <p class="text-xs text-gray-400 dark:text-slate-400">Terima berita bulanan seputar buku baru terpopuler di MacaBae.</p>
+                                <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">{{ __('Rekomendasi Buku Baru') }}</h4>
+                                <p class="text-xs text-gray-400 dark:text-slate-400">{{ __('Terima berita bulanan seputar buku baru terpopuler di MacaBae.') }}</p>
                             </div>
                             <label class="relative inline-flex items-center cursor-pointer flex-shrink-0">
                                 <input type="checkbox" name="notif_rekomendasi" value="1" {{ $user->notif_rekomendasi ? 'checked' : '' }} class="sr-only peer">
@@ -289,7 +289,7 @@
 
                     <div class="mt-8 flex justify-end">
                         <button type="submit" class="px-5 py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white font-bold rounded-2xl text-xs transition shadow-sm cursor-pointer transform active:scale-95">
-                            Simpan Preferensi
+                            {{ __('Simpan Preferensi') }}
                         </button>
                     </div>
                 </form>
@@ -302,13 +302,13 @@
                  x-transition:enter-end="opacity-100 translate-y-0"
                  style="display: none;">
                 
-                <h2 class="text-xl font-bold text-[#2F3951] dark:text-slate-100 mb-6">Tampilan Aplikasi</h2>
-                <p class="text-gray-400 dark:text-slate-400 text-xs mb-8">Sesuaikan skema warna dan tema antarmuka visual MacaBae Anda.</p>
+                <h2 class="text-xl font-bold text-[#2F3951] dark:text-slate-100 mb-6">{{ __('Tampilan Aplikasi') }}</h2>
+                <p class="text-gray-400 dark:text-slate-400 text-xs mb-8">{{ __('Sesuaikan skema warna dan tema antarmuka visual MacaBae Anda.') }}</p>
 
                 <div class="space-y-8">
                     <!-- Tema Pilihan -->
                     <div class="space-y-4">
-                        <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">Pilihan Tema</h4>
+                        <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">{{ __('Pilihan Tema') }}</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             @php $currentTheme = session('theme', 'light'); @endphp
                             <!-- Light Mode -->
@@ -320,8 +320,8 @@
                                     @endif
                                 </div>
                                 <div class="text-left">
-                                    <span class="block text-sm font-bold text-[#2F3951] dark:text-slate-100">Mode Terang {{ $currentTheme === 'light' ? '(Aktif)' : '' }}</span>
-                                    <span class="text-[10px] text-gray-400 dark:text-slate-400">Bersih, segar, dan ramah di siang hari.</span>
+                                    <span class="block text-sm font-bold text-[#2F3951] dark:text-slate-100">{{ __('Mode Terang') }} {{ $currentTheme === 'light' ? '(' . __('Aktif') . ')' : '' }}</span>
+                                    <span class="text-[10px] text-gray-400 dark:text-slate-400">{{ __('Bersih, segar, dan ramah di siang hari.') }}</span>
                                 </div>
                             </a>
 
@@ -334,8 +334,8 @@
                                     @endif
                                 </div>
                                 <div class="text-left">
-                                    <span class="block text-sm font-bold text-[#2F3951] dark:text-slate-100">Mode Gelap {{ $currentTheme === 'dark' ? '(Aktif)' : '' }}</span>
-                                    <span class="text-[10px] text-gray-400 dark:text-slate-400">Nyaman di mata untuk malam hari.</span>
+                                    <span class="block text-sm font-bold text-[#2F3951] dark:text-slate-100">{{ __('Mode Gelap') }} {{ $currentTheme === 'dark' ? '(' . __('Aktif') . ')' : '' }}</span>
+                                    <span class="text-[10px] text-gray-400 dark:text-slate-400">{{ __('Nyaman di mata untuk malam hari.') }}</span>
                                 </div>
                             </a>
                         </div>
@@ -343,7 +343,7 @@
 
                     <!-- Pilihan Bahasa -->
                     <div class="space-y-4">
-                        <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">Pilihan Bahasa / Language Selection</h4>
+                        <h4 class="text-sm font-bold text-[#2F3951] dark:text-slate-200">{{ __('Pilihan Bahasa / Language Selection') }}</h4>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             @php
                                 $currentLocale = app()->getLocale();
@@ -357,8 +357,8 @@
                                     @endif
                                 </div>
                                 <div class="text-left">
-                                    <span class="block text-sm font-bold text-[#2F3951] dark:text-slate-100">Bahasa Indonesia</span>
-                                    <span class="text-[10px] text-gray-400 dark:text-slate-400">Gunakan Bahasa Indonesia sebagai bahasa utama aplikasi.</span>
+                                    <span class="block text-sm font-bold text-[#2F3951] dark:text-slate-100">{{ __('Bahasa Indonesia') }}</span>
+                                    <span class="text-[10px] text-gray-400 dark:text-slate-400">{{ __('Gunakan Bahasa Indonesia sebagai bahasa utama aplikasi.') }}</span>
                                 </div>
                             </a>
 
@@ -371,8 +371,8 @@
                                     @endif
                                 </div>
                                 <div class="text-left">
-                                    <span class="block text-sm font-bold text-[#2F3951] dark:text-slate-100">English</span>
-                                    <span class="text-[10px] text-gray-400 dark:text-slate-400">Use English as the primary language for the application.</span>
+                                    <span class="block text-sm font-bold text-[#2F3951] dark:text-slate-100">{{ __('English') }}</span>
+                                    <span class="text-[10px] text-gray-400 dark:text-slate-400">{{ __('Use English as the primary language for the application.') }}</span>
                                 </div>
                             </a>
                         </div>
@@ -387,8 +387,8 @@
                  x-transition:enter-end="opacity-100 translate-y-0"
                  style="display: none;">
                 
-                <h2 class="text-xl font-bold text-[#2F3951] dark:text-slate-100 mb-6">Pusat Bantuan & FAQ</h2>
-                <p class="text-gray-400 dark:text-slate-400 text-xs mb-8">Temukan jawaban cepat atas pertanyaan Anda tentang MacaBae.</p>
+                <h2 class="text-xl font-bold text-[#2F3951] dark:text-slate-100 mb-6">{{ __('Pusat Bantuan & FAQ') }}</h2>
+                <p class="text-gray-400 dark:text-slate-400 text-xs mb-8">{{ __('Temukan jawaban cepat atas pertanyaan Anda tentang MacaBae.') }}</p>
 
                 <!-- FAQ Accordion -->
                 <div class="space-y-4 text-left" x-data="{ openFaq: null }">
@@ -396,39 +396,39 @@
                     <!-- FAQ 1 -->
                     <div class="border border-gray-50 dark:border-slate-800 rounded-2xl overflow-hidden bg-[#F8FAFC]/50 dark:bg-slate-800/50">
                         <button @click="openFaq = (openFaq === 1 ? null : 1)" class="w-full flex items-center justify-between px-6 py-4 font-bold text-[#2F3951] dark:text-slate-200 text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition cursor-pointer">
-                            Bagaimana cara mengajukan peminjaman buku?
+                            {{ __('Bagaimana cara mengajukan peminjaman buku?') }}
                             <svg class="h-4 w-4 text-gray-400 transition-transform duration-200" :class="openFaq === 1 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
                         <div x-show="openFaq === 1" class="px-6 pb-5 text-xs text-gray-500 dark:text-slate-400 leading-relaxed border-t border-gray-100/50 dark:border-slate-800/50 pt-3 bg-white dark:bg-slate-900" style="display: none;">
-                            Cari buku yang ingin Anda pinjam melalui halaman <strong>Katalog</strong>, klik buku tersebut untuk membuka halaman detail. Tentukan durasi pinjam yang Anda inginkan (maksimal 7 hari), kemudian tekan tombol <strong>"Pinjam buku"</strong>. Transaksi Anda akan berstatus <em>Menunggu Persetujuan</em> sampai dikonfirmasi oleh Pustakawan.
+                            {{ __('Cari buku yang ingin Anda pinjam melalui halaman Katalog, klik buku tersebut untuk membuka halaman detail. Tentukan durasi pinjam yang Anda inginkan (maksimal 7 hari), kemudian tekan tombol "Pinjam buku". Transaksi Anda akan berstatus Menunggu Persetujuan sampai dikonfirmasi oleh Pustakawan.') }}
                         </div>
                     </div>
 
                     <!-- FAQ 2 -->
                     <div class="border border-gray-50 dark:border-slate-800 rounded-2xl overflow-hidden bg-[#F8FAFC]/50 dark:bg-slate-800/50">
                         <button @click="openFaq = (openFaq === 2 ? null : 2)" class="w-full flex items-center justify-between px-6 py-4 font-bold text-[#2F3951] dark:text-slate-200 text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition cursor-pointer">
-                            Apakah ada denda keterlambatan pengembalian?
+                            {{ __('Apakah ada denda keterlambatan pengembalian?') }}
                             <svg class="h-4 w-4 text-gray-400 transition-transform duration-200" :class="openFaq === 2 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
                         <div x-show="openFaq === 2" class="px-6 pb-5 text-xs text-gray-500 dark:text-slate-400 leading-relaxed border-t border-gray-100/50 dark:border-slate-800/50 pt-3 bg-white dark:bg-slate-900" style="display: none;">
-                            Ya, apabila tanggal pengembalian melewati tanggal jatuh tempo yang telah ditentukan saat peminjaman, Anda akan dikenakan denda keterlambatan sebesar <strong>Rp 1.000 per hari</strong> untuk setiap buku. Informasi denda yang belum dibayar akan tampil di dashboard Anda.
+                            {{ __('Ya, apabila tanggal pengembalian melewati tanggal jatuh tempo yang telah ditentukan saat peminjaman, Anda akan dikenakan denda keterlambatan sebesar Rp 1.000 per hari untuk setiap buku. Informasi denda yang belum dibayar akan tampil di dashboard Anda.') }}
                         </div>
                     </div>
 
                     <!-- FAQ 3 -->
                     <div class="border border-gray-50 dark:border-slate-800 rounded-2xl overflow-hidden bg-[#F8FAFC]/50 dark:bg-slate-800/50">
                         <button @click="openFaq = (openFaq === 3 ? null : 3)" class="w-full flex items-center justify-between px-6 py-4 font-bold text-[#2F3951] dark:text-slate-200 text-sm hover:bg-gray-50 dark:hover:bg-slate-800 transition cursor-pointer">
-                            Bisakah saya membatalkan pengajuan pinjam buku?
+                            {{ __('Bisakah saya membatalkan pengajuan pinjam buku?') }}
                             <svg class="h-4 w-4 text-gray-400 transition-transform duration-200" :class="openFaq === 3 ? 'rotate-180' : ''" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
                             </svg>
                         </button>
                         <div x-show="openFaq === 3" class="px-6 pb-5 text-xs text-gray-500 dark:text-slate-400 leading-relaxed border-t border-gray-100/50 dark:border-slate-800/50 pt-3 bg-white dark:bg-slate-900" style="display: none;">
-                            Tentu saja! Jika pengajuan peminjaman buku Anda masih berstatus <strong>Menunggu Persetujuan</strong> (belum diproses oleh pustakawan), Anda dapat membatalkannya secara langsung dengan mengklik tombol <strong>"Batalkan"</strong> di halaman Peminjaman Buku.
+                            {{ __('Tentu saja! Jika pengajuan peminjaman buku Anda masih berstatus Menunggu Persetujuan (belum diproses oleh pustakawan), Anda dapat membatalkannya secara langsung dengan mengklik tombol "Batalkan" di halaman Peminjaman Buku.') }}
                         </div>
                     </div>
 
@@ -442,22 +442,23 @@
                  x-transition:enter-end="opacity-100 translate-y-0"
                  style="display: none;">
                 
-                <h2 class="text-xl font-bold text-[#2F3951] dark:text-slate-100 mb-6">Tentang Aplikasi</h2>
+                <h2 class="text-xl font-bold text-[#2F3951] dark:text-slate-100 mb-6">{{ __('Tentang Aplikasi') }}</h2>
                 
                 <div class="flex flex-col items-center text-center space-y-6 py-6">
-                    <img src="{{ asset('assets/img/brand/logo-macabae.png') }}" alt="Logo MacaBae" class="h-14">
+                    <img src="{{ asset('assets/img/brand/logo-macabae.png') }}" alt="Logo MacaBae" class="h-14 dark:hidden">
+                    <img src="{{ asset('assets/img/brand/logo-macabae-putih.png') }}" alt="Logo MacaBae" class="h-14 hidden dark:block">
                     
                     <div class="max-w-md space-y-4">
                         <p class="text-sm text-gray-500 dark:text-slate-400 leading-relaxed">
-                            MacaBae adalah platform sirkulasi perpustakaan modern berbasis web yang dikembangkan khusus untuk mempermudah anggota mencari, meminjam, dan mengelola buku perpustakaan secara transparan, mudah, dan efisien.
+                            {{ __('MacaBae adalah platform sirkulasi perpustakaan modern berbasis web yang dikembangkan khusus untuk mempermudah anggota mencari, meminjam, dan mengelola buku perpustakaan secara transparan, mudah, dan efisien.') }}
                         </p>
                         
                         <div class="inline-block px-4 py-1.5 bg-[#F3F7FB] dark:bg-slate-800 border border-[#4D9BE2]/10 dark:border-slate-700 rounded-full text-xs text-[#4D9BE2] font-bold">
-                            Versi Aplikasi: 2.3.0-stable
+                            {{ __('Versi Aplikasi:') }} 2.3.0-stable
                         </div>
 
                         <p class="text-[10px] text-gray-400 dark:text-slate-500">
-                            © 2026 MacaBae Team. Hak Cipta Dilindungi.
+                            {{ __('© 2026 MacaBae Team. Hak Cipta Dilindungi.') }}
                         </p>
                     </div>
                 </div>
@@ -478,13 +479,13 @@
          x-transition:leave-end="opacity-0">
         
         <div @click.away="showEditNameModal = false" 
-             class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-slate-800 transform transition-all"
+             class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-slate-700/50 transform transition-all"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 scale-95 translate-y-4"
              x-transition:enter-end="opacity-100 scale-100 translate-y-0">
             
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-base font-bold text-[#2F3951] dark:text-slate-100">Ubah Nama Lengkap</h3>
+                <h3 class="text-base font-bold text-[#2F3951] dark:text-slate-100">{{ __('Ubah Nama Lengkap') }}</h3>
                 <button @click="showEditNameModal = false" class="text-gray-400 hover:text-gray-600 transition">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -495,16 +496,16 @@
             <form action="{{ route('member.pengaturan.updateName') }}" method="POST" class="m-0 space-y-4">
                 @csrf
                 <div class="space-y-1">
-                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Nama lengkap baru</label>
+                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ __('Nama lengkap baru') }}</label>
                     <input type="text" name="name" value="{{ $user->name }}" required class="w-full border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-2xl px-5 py-3.5 text-sm text-[#2F3951] font-semibold focus:outline-none focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2]/10 transition">
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-gray-50 dark:border-slate-800">
                     <button type="button" @click="showEditNameModal = false" class="px-5 py-3 bg-gray-50 dark:bg-slate-850 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 rounded-2xl text-xs font-bold transition">
-                        Batal
+                        {{ __('Batal') }}
                     </button>
                     <button type="submit" class="px-5 py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-2xl text-xs font-bold transition shadow-sm">
-                        Simpan Perubahan
+                        {{ __('Simpan Perubahan') }}
                     </button>
                 </div>
             </form>
@@ -523,13 +524,13 @@
          x-transition:leave-end="opacity-0">
         
         <div @click.away="showEditEmailModal = false" 
-             class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-slate-800 transform transition-all"
+             class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-slate-700/50 transform transition-all"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 scale-95 translate-y-4"
              x-transition:enter-end="opacity-100 scale-100 translate-y-0">
             
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-base font-bold text-[#2F3951] dark:text-slate-100">Ubah Alamat Email</h3>
+                <h3 class="text-base font-bold text-[#2F3951] dark:text-slate-100">{{ __('Ubah Alamat Email') }}</h3>
                 <button @click="showEditEmailModal = false" class="text-gray-400 hover:text-gray-600 transition">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -540,16 +541,16 @@
             <form action="{{ route('member.pengaturan.updateEmail') }}" method="POST" class="m-0 space-y-4">
                 @csrf
                 <div class="space-y-1">
-                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Alamat email baru</label>
+                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ __('Alamat email baru') }}</label>
                     <input type="email" name="email" value="{{ $user->email }}" required class="w-full border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-2xl px-5 py-3.5 text-sm text-[#2F3951] font-semibold focus:outline-none focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2]/10 transition">
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-gray-50 dark:border-slate-800">
                     <button type="button" @click="showEditEmailModal = false" class="px-5 py-3 bg-gray-50 dark:bg-slate-850 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 rounded-2xl text-xs font-bold transition">
-                        Batal
+                        {{ __('Batal') }}
                     </button>
                     <button type="submit" class="px-5 py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-2xl text-xs font-bold transition shadow-sm">
-                        Simpan Perubahan
+                        {{ __('Simpan Perubahan') }}
                     </button>
                 </div>
             </form>
@@ -568,13 +569,13 @@
          x-transition:leave-end="opacity-0">
         
         <div @click.away="showEditPhoneModal = false" 
-             class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-slate-800 transform transition-all"
+             class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-slate-700/50 transform transition-all"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 scale-95 translate-y-4"
              x-transition:enter-end="opacity-100 scale-100 translate-y-0">
             
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-base font-bold text-[#2F3951] dark:text-slate-100">Ubah Nomor Telepon</h3>
+                <h3 class="text-base font-bold text-[#2F3951] dark:text-slate-100">{{ __('Ubah Nomor Telepon') }}</h3>
                 <button @click="showEditPhoneModal = false" class="text-gray-400 hover:text-gray-600 transition">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -585,16 +586,16 @@
             <form action="{{ route('member.pengaturan.updatePhone') }}" method="POST" class="m-0 space-y-4">
                 @csrf
                 <div class="space-y-1">
-                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Nomor telepon baru</label>
-                    <input type="text" name="no_telp" value="{{ $user->no_telp }}" placeholder="Contoh: 0821xxxxxxxx" required class="w-full border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-2xl px-5 py-3.5 text-sm text-[#2F3951] font-semibold focus:outline-none focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2]/10 transition">
+                    <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ __('Nomor telepon baru') }}</label>
+                    <input type="text" name="no_telp" value="{{ $user->no_telp }}" placeholder="{{ __('Contoh: 0821xxxxxxxx') }}" required class="w-full border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-2xl px-5 py-3.5 text-sm text-[#2F3951] font-semibold focus:outline-none focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2]/10 transition">
                 </div>
 
                 <div class="flex justify-end gap-3 pt-4 border-t border-gray-50 dark:border-slate-800">
                     <button type="button" @click="showEditPhoneModal = false" class="px-5 py-3 bg-gray-50 dark:bg-slate-850 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 rounded-2xl text-xs font-bold transition">
-                        Batal
+                        {{ __('Batal') }}
                     </button>
                     <button type="submit" class="px-5 py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-2xl text-xs font-bold transition shadow-sm">
-                        Simpan Perubahan
+                        {{ __('Simpan Perubahan') }}
                     </button>
                 </div>
             </form>
@@ -613,13 +614,13 @@
          x-transition:leave-end="opacity-0">
         
         <div @click.away="showEditPasswordModal = false" 
-             class="bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-slate-800 transform transition-all"
+             class="bg-white dark:bg-slate-800 w-full max-w-md rounded-3xl p-6 shadow-xl border border-gray-100 dark:border-slate-700/50 transform transition-all"
              x-transition:enter="transition ease-out duration-300"
              x-transition:enter-start="opacity-0 scale-95 translate-y-4"
              x-transition:enter-end="opacity-100 scale-100 translate-y-0">
             
             <div class="flex justify-between items-center mb-6">
-                <h3 class="text-base font-bold text-[#2F3951] dark:text-slate-100">Ubah Password</h3>
+                <h3 class="text-base font-bold text-[#2F3951] dark:text-slate-100">{{ __('Ubah Password') }}</h3>
                 <button @click="showEditPasswordModal = false" class="text-gray-400 hover:text-gray-600 transition">
                     <svg class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12" />
@@ -631,27 +632,27 @@
                 @csrf
                 <div class="space-y-4">
                     <div class="space-y-1">
-                        <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Password Saat Ini</label>
+                        <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ __('Password Saat Ini') }}</label>
                         <input type="password" name="current_password" required class="w-full border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-2xl px-5 py-3.5 text-sm text-[#2F3951] font-semibold focus:outline-none focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2]/10 transition">
                     </div>
 
                     <div class="space-y-1">
-                        <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Password Baru</label>
+                        <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ __('Password Baru') }}</label>
                         <input type="password" name="password" required class="w-full border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-2xl px-5 py-3.5 text-sm text-[#2F3951] font-semibold focus:outline-none focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2]/10 transition">
                     </div>
 
                     <div class="space-y-1">
-                        <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">Konfirmasi Password Baru</label>
+                        <label class="block text-xs font-bold text-gray-400 dark:text-slate-500 uppercase tracking-wider mb-2">{{ __('Konfirmasi Password Baru') }}</label>
                         <input type="password" name="password_confirmation" required class="w-full border border-gray-200 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-2xl px-5 py-3.5 text-sm text-[#2F3951] font-semibold focus:outline-none focus:border-[#4D9BE2] focus:ring-1 focus:ring-[#4D9BE2]/10 transition">
                     </div>
                 </div>
 
                 <div class="flex justify-end gap-3 pt-6 border-t border-gray-50 dark:border-slate-800">
                     <button type="button" @click="showEditPasswordModal = false" class="px-5 py-3 bg-gray-50 dark:bg-slate-850 hover:bg-gray-100 dark:hover:bg-slate-800 text-gray-600 dark:text-slate-300 rounded-2xl text-xs font-bold transition">
-                        Batal
+                        {{ __('Batal') }}
                     </button>
                     <button type="submit" class="px-5 py-3 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-2xl text-xs font-bold transition shadow-sm">
-                        Simpan Perubahan
+                        {{ __('Simpan Perubahan') }}
                     </button>
                 </div>
             </form>

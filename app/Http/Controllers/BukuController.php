@@ -93,18 +93,24 @@ class BukuController extends Controller
     }
 
 
+
+
     // Memproses penyimpanan buku baru ke database
     public function store(Request $request)
     {
-        $request->validate([
+        $isEbook = false;
+        if ($request->kategori_id) {
+            $kategori = Kategori::find($request->kategori_id);
+            $isEbook = $kategori && strtolower($kategori->nama_kategori) === 'e-book';
+        }
+
+        $rules = [
             'isbn'         => 'required|unique:bukus,isbn',
             'judul'        => 'required|string|max:255',
             'kategori_id'  => 'required|exists:kategoris,id',
             'pengarang'    => 'required|string|max:255',
             'penerbit'     => 'nullable|string|max:255',
             'tahun_terbit' => 'nullable|integer|min:1000|max:'.now()->year,
-            'stok'         => 'required|integer|min:0',
-            'lokasi_rak'   => 'required|string|max:255',
             'status'       => 'required|in:aktif,non aktif,dipinjam',
             'sampul'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'deskripsi'    => 'nullable|string',
@@ -113,38 +119,73 @@ class BukuController extends Controller
             'panjang'      => 'nullable|string|max:255',
             'berat'        => 'nullable|string|max:255',
             'bahasa'       => 'nullable|string|max:255',
-            'halaman'      => 'nullable|integer|min:0',
             'jenis'        => 'nullable|string|max:255',
             'tanggal_terbit'=> 'nullable|date',
-        ]);
+        ];
+
+        if ($isEbook) {
+            $rules['halaman'] = 'required|integer|min:1';
+            $rules['ebook_contents'] = 'required|array';
+            $rules['ebook_contents.*'] = 'required|string';
+            $rules['ebook_chapters'] = 'nullable|array';
+            $rules['ebook_chapters.*.title'] = 'required|string|max:255';
+            $rules['ebook_chapters.*.start_page'] = 'required|integer|min:1';
+            $rules['stok'] = 'nullable|integer|min:0';
+            $rules['lokasi_rak'] = 'nullable|string|max:255';
+        } else {
+            $rules['halaman'] = 'nullable|integer|min:0';
+            $rules['stok'] = 'required|integer|min:0';
+            $rules['lokasi_rak'] = 'required|string|max:255';
+        }
+
+        $request->validate($rules);
 
         $pathCover = null;
         if ($request->hasFile('sampul')) {
-            // File gambar disimpan ke folder 'storage/app/public/cover_buku'
             $pathCover = $request->file('sampul')->store('cover_buku', 'public');
         }
 
-        Buku::create([
+        $buku = Buku::create([
             'isbn'         => $request->isbn,
             'judul'        => $request->judul,
             'pengarang'    => $request->pengarang,
             'penerbit'     => $request->penerbit ?? '-',
             'tahun_terbit' => $request->tahun_terbit ?? now()->year,
-            'stok'         => $request->stok,
-            'lokasi_rak'   => $request->lokasi_rak,
+            'stok'         => $isEbook ? 0 : $request->stok,
+            'lokasi_rak'   => $isEbook ? 'E-Book Digital' : $request->lokasi_rak,
             'kategori_id'  => $request->kategori_id,
             'status'       => $request->status,
             'cover_buku'   => $pathCover,
             'deskripsi'    => $request->deskripsi,
             'sinopsis'     => $request->sinopsis,
-            'lebar'        => $request->lebar ?? '15.0 cm',
-            'panjang'      => $request->panjang ?? '23.0 cm',
-            'berat'        => $request->berat ?? '0.45 kg',
+            'lebar'        => $isEbook ? '-' : ($request->lebar ?? '15.0 cm'),
+            'panjang'      => $isEbook ? '-' : ($request->panjang ?? '23.0 cm'),
+            'berat'        => $isEbook ? '-' : ($request->berat ?? '0.45 kg'),
             'bahasa'       => $request->bahasa ?? 'Indonesia',
-            'halaman'      => $request->halaman ?? rand(180, 420),
-            'jenis'        => $request->jenis ?? 'Buku Fisik',
+            'halaman'      => $request->halaman,
+            'jenis'        => $isEbook ? 'E-Book Digital' : ($request->jenis ?? 'Buku Fisik'),
             'tanggal_terbit'=> $request->tanggal_terbit ?? now()->subYears(rand(2, 8))->format('Y-m-d'),
         ]);
+
+        if ($isEbook && $request->has('ebook_contents')) {
+            foreach ($request->input('ebook_contents') as $pageNumber => $content) {
+                $buku->ebookPages()->create([
+                    'page_number' => $pageNumber,
+                    'content'     => $content
+                ]);
+            }
+        }
+
+        if ($isEbook && $request->has('ebook_chapters')) {
+            foreach ($request->input('ebook_chapters') as $chapter) {
+                if (!empty($chapter['title']) && !empty($chapter['start_page'])) {
+                    $buku->ebookChapters()->create([
+                        'title'      => $chapter['title'],
+                        'start_page' => $chapter['start_page']
+                    ]);
+                }
+            }
+        }
 
         return redirect()->route(auth()->user()->role . '.buku.index')->with('success', 'Buku baru berhasil ditambahkan ke sistem MacaBae!');
     }
@@ -170,15 +211,19 @@ class BukuController extends Controller
     // Memproses perubahan data buku ke database
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $isEbook = false;
+        if ($request->kategori_id) {
+            $kategori = Kategori::find($request->kategori_id);
+            $isEbook = $kategori && strtolower($kategori->nama_kategori) === 'e-book';
+        }
+
+        $rules = [
             'isbn'         => 'required|unique:bukus,isbn,'.$id,
             'judul'        => 'required|string|max:255',
             'kategori_id'  => 'required|exists:kategoris,id',
             'pengarang'    => 'required|string|max:255',
             'penerbit'     => 'nullable|string|max:255',
             'tahun_terbit' => 'nullable|integer|min:1000|max:'.now()->year,
-            'stok'         => 'required|integer|min:0',
-            'lokasi_rak'   => 'required|string|max:255',
             'status'       => 'required|in:aktif,non aktif,dipinjam',
             'sampul'       => 'nullable|image|mimes:jpeg,png,jpg|max:2048',
             'deskripsi'    => 'nullable|string',
@@ -187,10 +232,26 @@ class BukuController extends Controller
             'panjang'      => 'nullable|string|max:255',
             'berat'        => 'nullable|string|max:255',
             'bahasa'       => 'nullable|string|max:255',
-            'halaman'      => 'nullable|integer|min:0',
             'jenis'        => 'nullable|string|max:255',
             'tanggal_terbit'=> 'nullable|date',
-        ]);
+        ];
+
+        if ($isEbook) {
+            $rules['halaman'] = 'required|integer|min:1';
+            $rules['ebook_contents'] = 'required|array';
+            $rules['ebook_contents.*'] = 'required|string';
+            $rules['ebook_chapters'] = 'nullable|array';
+            $rules['ebook_chapters.*.title'] = 'required|string|max:255';
+            $rules['ebook_chapters.*.start_page'] = 'required|integer|min:1';
+            $rules['stok'] = 'nullable|integer|min:0';
+            $rules['lokasi_rak'] = 'nullable|string|max:255';
+        } else {
+            $rules['halaman'] = 'nullable|integer|min:0';
+            $rules['stok'] = 'required|integer|min:0';
+            $rules['lokasi_rak'] = 'required|string|max:255';
+        }
+
+        $request->validate($rules);
 
         $buku = Buku::findOrFail($id);
         
@@ -202,18 +263,18 @@ class BukuController extends Controller
             'pengarang'    => $request->pengarang,
             'penerbit'     => $request->penerbit ?? '-',
             'tahun_terbit' => $request->tahun_terbit ?? now()->year,
-            'stok'         => $request->stok,
-            'lokasi_rak'   => $request->lokasi_rak,
+            'stok'         => $isEbook ? 0 : $request->stok,
+            'lokasi_rak'   => $isEbook ? 'E-Book Digital' : $request->lokasi_rak,
             'status'       => $request->status,
             'deskripsi'    => $request->deskripsi,
             'sinopsis'     => $request->sinopsis,
-            'lebar'        => $buku->lebar ?? '15.0 cm',
-            'panjang'      => $buku->panjang ?? '23.0 cm',
-            'berat'        => $buku->berat ?? '0.45 kg',
-            'bahasa'       => $buku->bahasa ?? 'Indonesia',
-            'halaman'      => $buku->halaman ?? rand(180, 420),
-            'jenis'        => $buku->jenis ?? 'Buku Fisik',
-            'tanggal_terbit'=> $buku->tanggal_terbit ?? now()->subYears(rand(2, 8))->format('Y-m-d'),
+            'lebar'        => $isEbook ? '-' : ($request->lebar ?? $buku->lebar ?? '15.0 cm'),
+            'panjang'      => $isEbook ? '-' : ($request->panjang ?? $buku->panjang ?? '23.0 cm'),
+            'berat'        => $isEbook ? '-' : ($request->berat ?? $buku->berat ?? '0.45 kg'),
+            'bahasa'       => $request->bahasa ?? $buku->bahasa ?? 'Indonesia',
+            'halaman'      => $request->halaman,
+            'jenis'        => $isEbook ? 'E-Book Digital' : ($request->jenis ?? $buku->jenis ?? 'Buku Fisik'),
+            'tanggal_terbit'=> $request->tanggal_terbit ?? $buku->tanggal_terbit ?? now()->subYears(rand(2, 8))->format('Y-m-d'),
         ];
 
         // Cek apakah user mengupload file sampul baru
@@ -230,6 +291,35 @@ class BukuController extends Controller
         }
 
         $buku->update($data);
+
+        if ($isEbook) {
+            if ($request->has('ebook_contents')) {
+                $buku->ebookPages()->delete();
+                foreach ($request->input('ebook_contents') as $pageNumber => $content) {
+                    $buku->ebookPages()->create([
+                        'page_number' => $pageNumber,
+                        'content'     => $content
+                    ]);
+                }
+            }
+
+            if ($request->has('ebook_chapters')) {
+                $buku->ebookChapters()->delete();
+                foreach ($request->input('ebook_chapters') as $chapter) {
+                    if (!empty($chapter['title']) && !empty($chapter['start_page'])) {
+                        $buku->ebookChapters()->create([
+                            'title'      => $chapter['title'],
+                            'start_page' => $chapter['start_page']
+                        ]);
+                    }
+                }
+            } else {
+                $buku->ebookChapters()->delete();
+            }
+        } else {
+            $buku->ebookPages()->delete();
+            $buku->ebookChapters()->delete();
+        }
 
         // Proses antrean reservasi jika ada tambahan stok
         \App\Models\Reservasi::checkAndProcessReservations($buku->id);
@@ -298,49 +388,67 @@ class BukuController extends Controller
 
         $isBookmarked = in_array($page, $bookmarks);
 
-        // Generate Daftar Isi (10 Bab) secara proporsional
+        // Generate Daftar Isi (10 Bab)
         $chapters = [];
-        if (str_contains(strtolower($buku->judul), 'mie ayam')) {
-            $chapterTitles = [
-                'Apartemen yang Terlalu Sunyi',
-                'Tubuh yang Tak Pernah Diterima',
-                'Lingkungan yang Diam',
-                'Dua Puluh Empat Jam Terakhir',
-                'Hal-Hal yang Tak Pernah Dilakukan',
-                'Pesta untuk Diri Sendiri',
-                'Selamat Ulang Tahun yang Terakhir',
-                'Botol Obat di Tangan Kanan',
-                'Anjuran Kecil di Balik Label',
-                'Seporsi Mie Ayam Sebelum Mati'
-            ];
-        } else {
-            $chapterTitles = [
-                'Pendahuluan & Pengantar Utama',
-                'Dasar-Dasar Konseptual & Teori',
-                'Analisis Awal & Pemahaman Kasus',
-                'Implementasi Praktis & Metodologi',
-                'Studi Kasus & Eksperimen Lapangan',
-                'Hasil Pengamatan & Analisis Data',
-                'Diskusi Mendalam & Temuan Utama',
-                'Tantangan, Hambatan & Solusi Alternatif',
-                'Rencana Pengembangan Masa Depan',
-                'Kesimpulan Akhir & Daftar Pustaka'
-            ];
-        }
-
-        $pagesPerChapter = (int) ceil($totalPages / 10);
-        for ($i = 0; $i < 10; $i++) {
-            $startPage = ($i * $pagesPerChapter) + 1;
-            $endPage = ($i + 1) * $pagesPerChapter;
-            if ($endPage > $totalPages || $i === 9) {
-                $endPage = $totalPages;
+        $dbChapters = $buku->ebookChapters;
+        if ($dbChapters->isNotEmpty()) {
+            foreach ($dbChapters as $index => $ch) {
+                $startPage = $ch->start_page;
+                $nextCh = $dbChapters->get($index + 1);
+                $endPage = $nextCh ? $nextCh->start_page - 1 : $totalPages;
+                if ($endPage < $startPage) {
+                    $endPage = $startPage;
+                }
+                $chapters[] = [
+                    'index' => $index + 1,
+                    'title' => $ch->title,
+                    'start_page' => $startPage,
+                    'end_page' => $endPage
+                ];
             }
-            $chapters[] = [
-                'index' => $i + 1,
-                'title' => ($i + 1) . '. ' . $chapterTitles[$i],
-                'start_page' => $startPage,
-                'end_page' => $endPage
-            ];
+        } else {
+            if (str_contains(strtolower($buku->judul), 'mie ayam')) {
+                $chapterTitles = [
+                    'Apartemen yang Terlalu Sunyi',
+                    'Tubuh yang Tak Pernah Diterima',
+                    'Lingkungan yang Diam',
+                    'Dua Puluh Empat Jam Terakhir',
+                    'Hal-Hal yang Tak Pernah Dilakukan',
+                    'Pesta untuk Diri Sendiri',
+                    'Selamat Ulang Tahun yang Terakhir',
+                    'Botol Obat di Tangan Kanan',
+                    'Anjuran Kecil di Balik Label',
+                    'Seporsi Mie Ayam Sebelum Mati'
+                ];
+            } else {
+                $chapterTitles = [
+                    'Pendahuluan & Pengantar Utama',
+                    'Dasar-Dasar Konseptual & Teori',
+                    'Analisis Awal & Pemahaman Kasus',
+                    'Implementasi Praktis & Metodologi',
+                    'Studi Kasus & Eksperimen Lapangan',
+                    'Hasil Pengamatan & Analisis Data',
+                    'Diskusi Mendalam & Temuan Utama',
+                    'Tantangan, Hambatan & Solusi Alternatif',
+                    'Rencana Pengembangan Masa Depan',
+                    'Kesimpulan Akhir & Daftar Pustaka'
+                ];
+            }
+
+            $pagesPerChapter = (int) ceil($totalPages / 10);
+            for ($i = 0; $i < 10; $i++) {
+                $startPage = ($i * $pagesPerChapter) + 1;
+                $endPage = ($i + 1) * $pagesPerChapter;
+                if ($endPage > $totalPages || $i === 9) {
+                    $endPage = $totalPages;
+                }
+                $chapters[] = [
+                    'index' => $i + 1,
+                    'title' => ($i + 1) . '. ' . $chapterTitles[$i],
+                    'start_page' => $startPage,
+                    'end_page' => $endPage
+                ];
+            }
         }
 
         // Tentukan Bab mana yang sedang aktif berdasarkan Halaman saat ini
@@ -353,7 +461,12 @@ class BukuController extends Controller
         }
 
         // Generate Konten Halaman Aktif
-        $content = $this->generateEbookContent($buku->judul, $page, $activeChapter['title'] ?? 'Bab');
+        $dbPageContent = $buku->ebookPages()->where('page_number', $page)->first();
+        if ($dbPageContent) {
+            $content = $dbPageContent->content;
+        } else {
+            $content = $this->generateEbookContent($buku->judul, $page, $activeChapter['title'] ?? 'Bab');
+        }
 
         return view('buku.read', compact(
             'buku', 'page', 'totalPages', 'bookmarks', 'isBookmarked', 'chapters', 'activeChapter', 'content'

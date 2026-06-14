@@ -25,18 +25,18 @@
 
     <nav class="fixed top-0 w-full bg-white/80 backdrop-blur-md z-[100] border-b border-gray-100">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
-            <div class="flex items-center gap-2">
+            <div class="flex items-center gap-2 md:flex-1">
                 <img src="{{ asset('assets/img/brand/logo-macabae.png') }}" alt="Logo" class="h-8">
             </div>
 
-            <div class="hidden md:flex gap-8 font-medium text-sm">
+            <div class="hidden md:flex gap-8 font-medium text-sm md:flex-1 md:justify-center">
                 <a href="#beranda" id="nav-beranda" class="nav-link text-blue-500 transition">Beranda</a>
                 <a href="#kategori" id="nav-kategori" class="nav-link hover:text-blue-500 transition">Kategori</a>
                 <a href="#katalog" id="nav-katalog" class="nav-link hover:text-blue-500 transition">Katalog Buku</a>
                 <a href="#fitur" id="nav-fitur" class="nav-link hover:text-blue-500 transition">Fitur</a>
             </div>
 
-        <div class="hidden md:flex gap-4 items-center">
+        <div class="hidden md:flex gap-4 items-center md:flex-1 md:justify-end">
             <a href="{{ route('login') }}" 
             class="relative text-[#4D9BE2] font-semibold text-sm px-4 group">
                 <span>Masuk</span>

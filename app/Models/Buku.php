@@ -45,4 +45,14 @@ class Buku extends Model
     {
         return $this->hasMany(Ulasan::class);
     }
+
+    public function ebookPages(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(EbookPage::class);
+    }
+
+    public function ebookChapters(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(EbookChapter::class)->orderBy('start_page', 'asc');
+    }
 }

@@ -1,13 +1,13 @@
 @extends('layouts.app')
 
-@section('title', 'Membaca: ' . $buku->judul)
+@section('title', __('Membaca') . ': ' . $buku->judul)
 
 @section('content')
 <div class="w-full flex flex-col md:px-2 max-w-7xl mx-auto box-border">
 
     {{-- BREADCRUMBS --}}
     <div class="mb-6 flex items-center gap-2 text-xs font-semibold text-gray-400 dark:text-slate-500">
-        <a href="{{ route('dashboard') }}" class="hover:text-[#4D9BE2]">Beranda</a>
+        <a href="{{ route('dashboard') }}" class="hover:text-[#4D9BE2]">{{ __('Beranda') }}</a>
         <span>/</span>
         <a href="{{ route('buku.show', $buku->id) }}" class="hover:text-[#4D9BE2] truncate max-w-[200px]">{{ $buku->judul }}</a>
         <span>/</span>
@@ -27,13 +27,13 @@
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                         </svg>
-                        <span>Kembali</span>
+                        <span>{{ __('Kembali') }}</span>
                     </a>
                     
                     <h2 class="text-sm md:text-base font-extrabold text-[#2F3951] dark:text-slate-100 truncate px-2 max-w-[280px] md:max-w-[380px]">{{ $buku->judul }}</h2>
                     
                     <span class="text-xs font-bold text-gray-400 dark:text-slate-500 bg-gray-50 dark:bg-slate-800/50 px-3 py-1.5 rounded-lg whitespace-nowrap">
-                        Halaman {{ $page }} / {{ $totalPages }}
+                        {{ __('Halaman') }} {{ $page }} / {{ $totalPages }}
                     </span>
                 </div>
 
@@ -52,17 +52,17 @@
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                             </svg>
-                            <span>Kembali</span>
+                            <span>{{ __('Kembali') }}</span>
                         </a>
                     @else
                         <span class="inline-flex items-center gap-2 text-xs font-bold text-gray-300 dark:text-slate-700 cursor-not-allowed">
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M15 19l-7-7 7-7" />
                             </svg>
-                            <span>Kembali</span>
+                            <span>{{ __('Kembali') }}</span>
                         </span>
                     @endif
-
+ 
                     {{-- Bookmark Button --}}
                     <form action="{{ route('buku.bookmark', $buku->id) }}" method="POST" class="m-0">
                         @csrf
@@ -72,29 +72,29 @@
                                 <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20" fill="currentColor">
                                     <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z" />
                                 </svg>
-                                <span>Halaman Ditandai</span>
+                                <span>{{ __('Halaman Ditandai') }}</span>
                             </button>
                         @else
                             <button type="submit" class="inline-flex items-center gap-2 px-5 py-2 bg-gray-50 dark:bg-slate-800 text-gray-500 dark:text-slate-300 hover:text-[#4D9BE2] dark:hover:text-[#4D9BE2] rounded-xl text-xs font-extrabold transition-all hover:bg-gray-100 dark:hover:bg-slate-700 cursor-pointer">
                                 <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 5c0-1.1.9-2 2-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z" />
                                 </svg>
-                                <span>Tandai Halaman</span>
+                                <span>{{ __('Tandai Halaman') }}</span>
                             </button>
                         @endif
                     </form>
-
+ 
                     {{-- Next Button --}}
                     @if($page < $totalPages)
                         <a href="{{ route('buku.read', ['id' => $buku->id, 'page' => $page + 1]) }}" class="inline-flex items-center gap-2 text-xs font-bold text-[#4D9BE2] hover:text-[#3D8BCF] transition-all">
-                            <span>Selanjutnya</span>
+                            <span>{{ __('Selanjutnya') }}</span>
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                             </svg>
                         </a>
                     @else
                         <span class="inline-flex items-center gap-2 text-xs font-bold text-gray-300 dark:text-slate-700 cursor-not-allowed">
-                            <span>Selanjutnya</span>
+                            <span>{{ __('Selanjutnya') }}</span>
                             <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
                             </svg>
@@ -112,7 +112,7 @@
             <div class="bg-white dark:bg-slate-900 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm p-6 transition-colors duration-200">
                 <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-[#4D9BE2] rounded-full"></span>
-                    Daftar Isi
+                    {{ __('Daftar Isi') }}
                 </h3>
                 
                 <div class="space-y-1.5 max-h-[300px] overflow-y-auto custom-scrollbar pr-1">
@@ -126,7 +126,7 @@
                               ? 'bg-[#F3F7FB] dark:bg-blue-950/30 text-[#4D9BE2] font-bold border-l-3 border-[#4D9BE2]' 
                               : 'text-gray-500 dark:text-slate-400 hover:bg-gray-50 dark:hover:bg-slate-800' }}">
                             <span class="truncate max-w-[210px]">{{ $ch['title'] }}</span>
-                            <span class="text-[10px] text-gray-400 dark:text-slate-500">Hal {{ $ch['start_page'] }}</span>
+                            <span class="text-[10px] text-gray-400 dark:text-slate-500">{{ __('Hal') }} {{ $ch['start_page'] }}</span>
                         </a>
                     @endforeach
                 </div>
@@ -136,7 +136,7 @@
             <div class="bg-white dark:bg-slate-900 rounded-3xl border border-gray-200 dark:border-slate-800 shadow-sm p-6 transition-colors duration-200">
                 <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-[#4D9BE2] rounded-full"></span>
-                    Halaman Ditandai
+                    {{ __('Halaman Ditandai') }}
                 </h3>
                 
                 @if(count($bookmarks) > 0)
@@ -152,7 +152,7 @@
                         @endforeach
                     </div>
                 @else
-                    <p class="text-gray-400 dark:text-slate-500 text-xs py-4 text-center">Belum ada halaman yang ditandai.</p>
+                    <p class="text-gray-400 dark:text-slate-500 text-xs py-4 text-center">{{ __('Belum ada halaman yang ditandai.') }}</p>
                 @endif
             </div>
 
@@ -161,7 +161,7 @@
                  x-data="{ pageNum: {{ $page }} }">
                 <h3 class="text-xs font-bold text-[#2F3951] dark:text-slate-200 uppercase tracking-wider mb-4 flex items-center gap-2">
                     <span class="w-1.5 h-4 bg-[#4D9BE2] rounded-full"></span>
-                    Loncat Halaman
+                    {{ __('Loncat Halaman') }}
                 </h3>
                 
                 <div class="flex flex-col gap-4">
@@ -191,11 +191,11 @@
                             </svg>
                         </button>
                     </div>
-
+ 
                     {{-- Jump Action Button --}}
                     <a :href="'{{ route('buku.read', $buku->id) }}?page=' + pageNum" 
                        class="w-full py-2.5 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white text-center font-bold rounded-xl text-xs shadow-sm transition-all flex items-center justify-center">
-                        Loncat
+                        {{ __('Loncat') }}
                     </a>
                 </div>
             </div>

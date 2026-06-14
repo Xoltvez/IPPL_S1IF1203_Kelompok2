@@ -70,10 +70,15 @@ class ReservasiController extends Controller
             return back()->with('error', 'Anda sudah terdaftar dalam antrean reservasi untuk buku ini.');
         }
 
+        $request->validate([
+            'durasi' => 'required|integer|min:1|max:7',
+        ]);
+
         // 5. Buat reservasi baru
         Reservasi::create([
             'user_id' => Auth::id(),
             'buku_id' => $bukuId,
+            'durasi' => $request->durasi,
             'status' => 'menunggu',
         ]);
 

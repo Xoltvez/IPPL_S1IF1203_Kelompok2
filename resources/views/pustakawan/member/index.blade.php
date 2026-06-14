@@ -69,9 +69,15 @@
                             {{ $member->email }}
                         </td>
                         <td class="px-6 py-4">
-                            <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium text-green-600">
-                                Aktif
-                            </span>
+                            @if(($member->status ?? 'aktif') === 'aktif')
+                                <span class="inline-flex items-center px-2.5 py-0.5 bg-emerald-50 text-emerald-600 border border-emerald-100 rounded-full text-xs font-semibold whitespace-nowrap">
+                                    Aktif
+                                </span>
+                            @else
+                                <span class="inline-flex items-center px-2.5 py-0.5 bg-rose-50 text-rose-600 border border-rose-100 rounded-full text-xs font-semibold whitespace-nowrap">
+                                    Tidak Aktif
+                                </span>
+                            @endif
                         </td>
                         <td class="px-6 py-4 text-sm text-gray-500">
                             {{ $member->created_at->format('d M Y') }}
