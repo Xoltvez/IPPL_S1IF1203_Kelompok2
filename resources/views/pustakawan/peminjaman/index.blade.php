@@ -227,7 +227,7 @@
                                         @endif
                                     </div>
                                 @else
-                                    <form action="{{ route('member.peminjaman.kembali', $peminjaman->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menyelesaikan peminjaman ini atas nama member?')">
+                                    <form action="{{ route(auth()->user()->role . '.peminjaman.kembali', $peminjaman->id) }}" method="POST" onsubmit="return confirm('Apakah Anda yakin ingin menyelesaikan peminjaman ini atas nama member?')">
                                         @csrf
                                         <button type="submit" class="px-3.5 py-1.5 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl text-xs font-bold transition shadow-sm whitespace-nowrap cursor-pointer">
                                             Kembalikan

@@ -56,6 +56,7 @@ Route::middleware('auth')->group(function () {
     Route::get('/theme/{theme}', [\App\Http\Controllers\PengaturanController::class, 'changeTheme'])->name('theme.switch');
     Route::get('/notifications/read-all', [\App\Http\Controllers\PengaturanController::class, 'readAllNotifications'])->name('notifications.readAll');
     Route::get('/panduan', [\App\Http\Controllers\PanduanController::class, 'index'])->name('member.panduan.index');
+    Route::post('/chatbot', [\App\Http\Controllers\ChatbotController::class, 'respond'])->name('member.chatbot.respond');
 });
 
 // 4. Area Khusus Administrator
@@ -71,6 +72,7 @@ Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->grou
     Route::post('denda/{id}/bayar', [\App\Http\Controllers\DendaController::class, 'bayar'])->name('denda.bayar');
     Route::post('peminjaman/{id}/setujui', [\App\Http\Controllers\PeminjamanController::class, 'setujui'])->name('peminjaman.setujui');
     Route::post('peminjaman/{id}/tolak', [\App\Http\Controllers\PeminjamanController::class, 'tolak'])->name('peminjaman.tolak');
+    Route::post('peminjaman/{id}/kembali', [\App\Http\Controllers\PeminjamanController::class, 'kembali'])->name('peminjaman.kembali');
     
     // Laporan Routes
     Route::get('laporan', [\App\Http\Controllers\LaporanController::class, 'index'])->name('laporan.index');
@@ -93,6 +95,7 @@ Route::middleware(['auth', 'role:pustakawan'])->prefix('pustakawan')->name('pust
     Route::post('denda/{id}/bayar', [\App\Http\Controllers\DendaController::class, 'bayar'])->name('denda.bayar');
     Route::post('peminjaman/{id}/setujui', [\App\Http\Controllers\PeminjamanController::class, 'setujui'])->name('peminjaman.setujui');
     Route::post('peminjaman/{id}/tolak', [\App\Http\Controllers\PeminjamanController::class, 'tolak'])->name('peminjaman.tolak');
+    Route::post('peminjaman/{id}/kembali', [\App\Http\Controllers\PeminjamanController::class, 'kembali'])->name('peminjaman.kembali');
     
     // Kunjungan Routes
     Route::resource('kunjungan', \App\Http\Controllers\KunjunganController::class)->only(['index', 'store']);

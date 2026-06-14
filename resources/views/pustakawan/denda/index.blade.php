@@ -266,7 +266,7 @@
 
                                 {{-- AKSI --}}
                                 <td class="px-6 py-4 text-center">
-                                    <form action="{{ route('member.peminjaman.kembali', $loan->id) }}" method="POST" onsubmit="return confirm('Apakah buku ini akan dikembalikan sekarang? Denda otomatis akan dibuat.')">
+                                    <form action="{{ route(auth()->user()->role . '.peminjaman.kembali', $loan->id) }}" method="POST" onsubmit="return confirm('Apakah buku ini akan dikembalikan sekarang? Denda otomatis akan dibuat.')">
                                         @csrf
                                         <button type="submit" class="px-4 py-2 bg-[#4D9BE2] hover:bg-[#3D8BCF] text-white rounded-xl text-xs font-bold transition shadow-sm cursor-pointer whitespace-nowrap">
                                             Kembalikan Buku
